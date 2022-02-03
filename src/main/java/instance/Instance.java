@@ -125,11 +125,7 @@ public class Instance {
 
     @Override
     public String toString() {
-        String s = "Instance{" + 
-                "nom=" + nom + 
-                ", capacite=" + capacite + 
-                ", depart=" + depot + 
-                ", clients=" ;
+        String s = "Instance{" + "nom=" + nom +  ", capacite=" + capacite + ", depart=" + depot + ", clients=" ;
         for(Client c: clients.values()){
             s += "\n\t"+c.toString();
         }
