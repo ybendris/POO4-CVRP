@@ -27,7 +27,7 @@ public class Instance {
      * Capacité de tout les véhicules
      */
     private final int capacite;
-    private final Depot depart;
+    private final Depot depot;
     /**
      * La clé correspond à l'id du client (supposé Unique)
      */
@@ -36,7 +36,7 @@ public class Instance {
     public Instance(String nom, int capacite, Depot depart) {
         this.nom = nom;
         this.capacite = capacite;
-        this.depart = depart;
+        this.depot = depart;
         this.clients = new LinkedHashMap<>();
     }
 
@@ -48,8 +48,8 @@ public class Instance {
         return capacite;
     }
 
-    public Depot getDepart() {
-        return depart;
+    public Depot getDepot() {
+        return depot;
     }
     
     
@@ -93,7 +93,7 @@ public class Instance {
         /**
          * Ajout la route du depot de l'instance vers le nouveau client
          */
-        this.depart.ajouterRoute(clientToAdd);
+        this.depot.ajouterRoute(clientToAdd);
         
         for(Client c : this.clients.values()){
             c.ajouterRoute(clientToAdd);
@@ -128,7 +128,7 @@ public class Instance {
         String s = "Instance{" + 
                 "nom=" + nom + 
                 ", capacite=" + capacite + 
-                ", depart=" + depart + 
+                ", depart=" + depot + 
                 ", clients=" ;
         for(Client c: clients.values()){
             s += "\n\t"+c.toString();
