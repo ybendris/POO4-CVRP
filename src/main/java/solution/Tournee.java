@@ -102,13 +102,14 @@ public class Tournee {
         if(clientToAdd == null){
             return false;
         }
-        else if(this.clients.containsKey(id)){
+        if(this.clients.containsKey(id)){
             return false;
         }
-        else if(this.demandeTotale + clientToAdd.getDemande() > this.capacite){
+        if(this.demandeTotale + clientToAdd.getDemande() > this.capacite){
             return false;
         }
         else{
+            
             return true;
         }
     }
@@ -124,6 +125,7 @@ public class Tournee {
     public boolean ajouterClient(Client clientToAdd){   
         int id = clientToAdd.getId();
         if(ajoutClientPossible(clientToAdd)){
+            
             this.demandeTotale += clientToAdd.getDemande(); //maj demande totale (addition)
            
             if(this.clients.isEmpty()){//Ajout dans une tournee qui n'a pas de client (Figure 3a)
@@ -133,24 +135,26 @@ public class Tournee {
                 int coutRetour = clientToAdd.getCoutVers(this.depot);
                 this.coutTotal = coutAller + coutRetour; //Cout est juste un aller-retour (Figure 3b)
             }
-            else{
+            else{ //Ajout dans une tournée qui contient déjà des clients (Figure 3c)
                 LinkedList<Client> copieClients = this.getClients();
                 Client lastClient = copieClients.getLast();
                 
                 lastClient.ajouterRoute(clientToAdd);
                 clientToAdd.ajouterRoute(this.depot);
                 
+                //Calcul du cout (Figure 3d)
                 int coutVersNewClient = lastClient.getCoutVers(clientToAdd);
                 int coutNewClientVersDepot = clientToAdd.getCoutVers(this.depot);
                 int coutARetirer = lastClient.getCoutVers(this.depot);
                 
                 this.coutTotal += coutVersNewClient + coutNewClientVersDepot - coutARetirer;                              
-            }           
+            }  
+            this.clients.put(id, clientToAdd);
+            return true;
         }
-                
-        this.clients.put(id, clientToAdd);
-        
-        return true;
+        else{
+            return false;
+        }
     }
 
     @Override
@@ -174,21 +178,17 @@ public class Tournee {
             
             Client newClient = i.getClients().getFirst();//On teste avec le premier Client
             
+            Client newClient2 = i.getClients().getLast();//On teste avec le premier Client
+            
+            System.out.println(newClient.equals(newClient2));
             
             Tournee t = new Tournee(i);
             System.out.println(t.toString());
             
-            
+            //On essaie d'ajoutes tous les clients en une tournees
             for(Client cli : i.getClients()){
-                if(t.ajouterClient(cli)){
-                    System.out.println(t.toString());
-                }
-                else{
-                    System.out.println("On ne peut pas ajouter le client: "+cli.toString());
-                }
+                t.ajouterClient(cli);
             }
-            
-            
             
         }
         catch(ReaderException ex){
