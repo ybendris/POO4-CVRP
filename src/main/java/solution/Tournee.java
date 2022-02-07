@@ -176,8 +176,6 @@ public class Tournee {
         }
         coutReel += this.clients.getLast().getCoutVers(this.depot);
         
-        System.out.println("Cout à vérifier: "+ coutAverif+" Cout réel: "+coutReel);
-        
         return (coutAverif == coutReel);
     }
     
@@ -189,9 +187,6 @@ public class Tournee {
             demandeReel += cli.getDemande();
         }
         
-        System.out.println("Demande à vérifier: "+demandeAverif+" Demande réelle: "+demandeReel);
-        
-        
         return (demandeAverif == demandeReel);
     }
     
@@ -200,7 +195,6 @@ public class Tournee {
      * @return 
      */
     private boolean verifCapacite(){
-        System.out.println("Demande: "+this.demandeTotale+" Capacite: "+this.getCapacite());
         return this.demandeTotale<=this.getCapacite();
     }
 
