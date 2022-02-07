@@ -160,7 +160,6 @@ public class Solution {
                 }
             }
             System.out.println(s.toString());
-            System.out.println(s.check());
         }
         catch(ReaderException ex){
             System.out.println(ex.getMessage());
