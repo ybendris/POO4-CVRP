@@ -89,17 +89,19 @@ public class Solution {
     }
     
     private boolean verifClients(){
-        LinkedList<Client> clientsAverif = this.instance.getClients();
+        List<Client> clientsAverif = this.instance.getClients();
         
-        for(Client cli : clientsAverif){
-            for(Tournee t : this.tournees){
-                if(t.getClients().contains(cli)){
-                   //clientsAverif.remove(cli);
-                   
+        for(Tournee t : this.tournees){
+            for(Client cli : t.getClients()){
+                if(!clientsAverif.remove(cli)){
+                    System.out.println("Erreur on livre client plusieur fois");
+                    return false;
                 }
             }
-           
-           
+        }
+        if(!clientsAverif.isEmpty()){
+            System.out.println("Un client n'a pas été livré");
+            return false;
         }
         
         return true;
