@@ -31,12 +31,7 @@ public class Solution {
         this.tournees = new LinkedList<>();
     }
     
-    /**
-     * 
-     * @param i
-     * @param clientToAdd
-     * @return 
-     */
+
     public boolean ajouterClientNouvelleTournee(Client clientToAdd){
         Tournee nouvelleTournee = new Tournee(this.instance);
         if(nouvelleTournee.ajouterClient(clientToAdd)){
@@ -60,6 +55,56 @@ public class Solution {
         }
         return false;
     }
+    
+    /**
+     * Checker de la class Solution
+     * @return 
+     * 
+     * Une solution est réalisable si :
+     *   • ses tournées sont toutes réalisables ;
+     *   • le coût total de la solution est correctement calculé ;
+     *   • tous les clients sont présents dans exactement une seule des tournées de la solution
+     */
+    public boolean check(){
+        return verifTournee() && verifCoutTotal() && verifClients();
+    }
+    
+    private boolean verifTournee(){
+       for(Tournee t : this.tournees){ //Ses tournées sont toutes réalisables
+            if(!t.check())
+                return false;
+       }
+       return true;
+    }
+    
+    private boolean verifCoutTotal(){
+        var coutAverif = this.coutTotal;
+        var coutReel = 0;
+        for(Tournee t : this.tournees){ //Ses tournées sont toutes réalisables
+            coutReel+= t.getCoutTotal();
+        }
+        
+        System.out.println("Cout à vérifier: "+ coutAverif+" Cout réel: "+coutReel);
+        return coutAverif == coutReel;
+    }
+    
+    private boolean verifClients(){
+        LinkedList<Client> clientsAverif = this.instance.getClients();
+        
+        for(Client cli : clientsAverif){
+            for(Tournee t : this.tournees){
+                if(t.getClients().contains(cli)){
+                   //clientsAverif.remove(cli);
+                   
+                }
+            }
+           
+           
+        }
+        
+        return true;
+    }
+    
 
     @Override
     public int hashCode() {
@@ -106,7 +151,6 @@ public class Solution {
             Instance i = read.readInstance();
           
             Solution s = new Solution(i);
-           
             
             for(Client cli : i.getClients()){
                 if(s.ajouterClientTourneeExistante(cli)){
@@ -115,9 +159,8 @@ public class Solution {
                     s.ajouterClientNouvelleTournee(cli);
                 }
             }
-            
             System.out.println(s.toString());
-            
+            System.out.println(s.check());
         }
         catch(ReaderException ex){
             System.out.println(ex.getMessage());

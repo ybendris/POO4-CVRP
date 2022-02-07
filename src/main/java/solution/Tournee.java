@@ -149,6 +149,60 @@ public class Tournee {
             return false;
         }
     }
+    
+    
+    /**
+     * Checker de la class Tournee
+     * @return 
+     */
+    public boolean check(){
+        return verifCout() && verifCapacite() && verifDemande();
+    }
+    
+    /**
+     * Verifie si la demande totale et le coût total sont correctement calculés 
+     * @return 
+     */
+    private boolean verifCout(){
+        var coutAverif = this.coutTotal;
+        var coutReel = 0;
+        
+        coutReel += this.depot.getCoutVers(this.clients.getFirst());//Depot vers premier
+        for(int i = 0; i < this.clients.size()-1 ; i++){
+            Client courant  = this.clients.get(i);
+            Client suivant  = this.clients.get(i+1);
+            
+            coutReel += courant.getCoutVers(suivant);
+        }
+        coutReel += this.clients.getLast().getCoutVers(this.depot);
+        
+        System.out.println("Cout à vérifier: "+ coutAverif+" Cout réel: "+coutReel);
+        
+        return (coutAverif == coutReel);
+    }
+    
+    private boolean verifDemande(){
+        var demandeAverif = this.demandeTotale;
+        var demandeReel = 0;
+        
+        for(Client cli: this.getClients()){
+            demandeReel += cli.getDemande();
+        }
+        
+        System.out.println("Demande à vérifier: "+demandeAverif+" Demande réelle: "+demandeReel);
+        
+        
+        return (demandeAverif == demandeReel);
+    }
+    
+    /**
+     * Verifie si la demande totale est inférieure ou égale à la capacité.
+     * @return 
+     */
+    private boolean verifCapacite(){
+        System.out.println("Demande: "+this.demandeTotale+" Capacite: "+this.getCapacite());
+        return this.demandeTotale<=this.getCapacite();
+    }
 
     @Override
     public String toString() {
