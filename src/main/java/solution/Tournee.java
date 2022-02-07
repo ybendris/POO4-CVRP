@@ -10,8 +10,8 @@ import instance.reseau.Depot;
 import instance.reseau.Route;
 import io.InstanceReader;
 import io.exception.ReaderException;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -24,14 +24,14 @@ public class Tournee {
     private final int capacite; //Ne change pas -> final
     private int demandeTotale; //Change à la modification des clients visités
     private int coutTotal; //Change à la modification des clients visité
-    private Map<Integer,Client> clients; //Change car on modifie cet ensemble
+    private LinkedList<Client> clients; //Change car on modifie cet ensemble
     
     public Tournee(Instance i){
         this.depot = i.getDepot();
         this.capacite = i.getCapacite();
         this.demandeTotale = 0;
         this.coutTotal = 0;
-        this.clients = new LinkedHashMap<>();
+        this.clients = new LinkedList<>();
     }
 
     public Depot getDepot() {
@@ -50,14 +50,10 @@ public class Tournee {
         return coutTotal;
     }
 
-    /**
-     * @return  une copie de la liste des clients
-     */ 
-    public LinkedList<Client> getClients(){
-        return new LinkedList<>(this.clients.values());
+    public List<Client> getClients() {
+        return clients;
     }
-    
-    
+
 
     public void setDemandeTotale(int demandeTotale) {
         this.demandeTotale = demandeTotale;
@@ -102,14 +98,11 @@ public class Tournee {
         if(clientToAdd == null){
             return false;
         }
-        if(this.clients.containsKey(id)){
-            return false;
-        }
+        
         if(this.demandeTotale + clientToAdd.getDemande() > this.capacite){
             return false;
         }
         else{
-            
             return true;
         }
     }
@@ -136,8 +129,8 @@ public class Tournee {
                 this.coutTotal = coutAller + coutRetour; //Cout est juste un aller-retour (Figure 3b)
             }
             else{ //Ajout dans une tournée qui contient déjà des clients (Figure 3c)
-                LinkedList<Client> copieClients = this.getClients();
-                Client lastClient = copieClients.getLast();
+                
+                Client lastClient = this.clients.getLast();
                 
                 lastClient.ajouterRoute(clientToAdd);
                 clientToAdd.ajouterRoute(this.depot);
@@ -149,7 +142,7 @@ public class Tournee {
                 
                 this.coutTotal += coutVersNewClient + coutNewClientVersDepot - coutARetirer;                              
             }  
-            this.clients.put(id, clientToAdd);
+            this.clients.addLast(clientToAdd);
             return true;
         }
         else{
@@ -161,7 +154,7 @@ public class Tournee {
     public String toString() {
         String s = "Tournee{" + "depot=" + depot + ", capacite=" + capacite + ", demandeTotale=" + demandeTotale + ", coutTotal=" + coutTotal + ", clients=";
         
-        for(Client c: clients.values()){
+        for(Client c: clients){
             s += "\n\t"+c.toString();
         }
         
