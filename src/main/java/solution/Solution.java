@@ -22,7 +22,9 @@ public class Solution {
      */
     private int coutTotal;
     private Instance instance;
-    private List<Tournee> tournees;
+    private LinkedList<Tournee> tournees;
+    
+    
     
     
     public Solution(Instance i){
@@ -31,7 +33,6 @@ public class Solution {
         this.tournees = new LinkedList<>();
     }
     
-
     public boolean ajouterClientNouvelleTournee(Client clientToAdd){
         Tournee nouvelleTournee = new Tournee(this.instance);
         if(nouvelleTournee.ajouterClient(clientToAdd)){
@@ -43,15 +44,31 @@ public class Solution {
     }
     
     public boolean ajouterClientTourneeExistante(Client clientToAdd){
-        
         int deltaCout = 0;
         //Parcours des tournees existantes
         for(Tournee t : this.tournees){
-            deltaCout = t.getCoutTotal();//15
+            deltaCout = t.getCoutTotal();
             if(t.ajouterClient(clientToAdd)){
                 this.coutTotal += t.getCoutTotal() - deltaCout;
                 return true;
             }
+        }
+        return false;
+    }
+    
+    public boolean ajouterClientDerniereTournee(Client clientToAdd){
+        int deltaCout = 0;
+        
+        if(this.tournees.size() == 0){
+            return false;
+        }
+        
+        Tournee derniereTournee = this.tournees.getLast();
+        
+        deltaCout = derniereTournee.getCoutTotal();
+        if(derniereTournee.ajouterClient(clientToAdd)){
+            this.coutTotal += derniereTournee.getCoutTotal() - deltaCout;
+            return true;
         }
         return false;
     }
@@ -66,10 +83,10 @@ public class Solution {
      *   • tous les clients sont présents dans exactement une seule des tournées de la solution
      */
     public boolean check(){
-        return verifTournee() && verifCoutTotal() && verifClients();
+        return verifTournees() && verifCoutTotal() && verifClients();
     }
     
-    private boolean verifTournee(){
+    private boolean verifTournees(){
        for(Tournee t : this.tournees){ //Ses tournées sont toutes réalisables
             if(!t.check())
                 return false;
@@ -107,7 +124,6 @@ public class Solution {
         return true;
     }
     
-
     @Override
     public int hashCode() {
         int hash = 3;
@@ -135,6 +151,10 @@ public class Solution {
         return Objects.equals(this.tournees, other.tournees);
     }
 
+    public int getCoutTotal() {
+        return coutTotal;
+    }
+
     @Override
     public String toString() {
         String s = "Solution{" + "coutTotal=" + coutTotal + ", instance=" + instance + ", tournees=";
@@ -145,7 +165,6 @@ public class Solution {
         s += "\n}"; 
         return s;
     }
-    
     
     public static void main(String[] args) {
         try{
@@ -167,11 +186,5 @@ public class Solution {
             System.out.println(ex.getMessage());
         }
     }
-            
-    
-    
-    
-    
-    
     
 }

@@ -55,7 +55,7 @@ public class InsertionSimple implements Solveur {
             Solution simple = algoSimple.solve(i);
             
             System.out.println(simple.toString());
-            System.out.println(simple.check());
+            
         }
         catch(ReaderException ex){
             System.out.println(ex.getMessage());
