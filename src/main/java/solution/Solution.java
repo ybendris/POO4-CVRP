@@ -30,6 +30,36 @@ public class Solution {
         this.instance = i;
         this.tournees = new LinkedList<>();
     }
+    
+    /**
+     * 
+     * @param i
+     * @param clientToAdd
+     * @return 
+     */
+    public boolean ajouterClientNouvelleTournee(Client clientToAdd){
+        Tournee nouvelleTournee = new Tournee(this.instance);
+        if(nouvelleTournee.ajouterClient(clientToAdd)){
+            this.coutTotal += nouvelleTournee.getCoutTotal();
+            this.tournees.add(nouvelleTournee);
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean ajouterClientTourneeExistante(Client clientToAdd){
+        
+        int deltaCout = 0;
+        //Parcours des tournees existantes
+        for(Tournee t : this.tournees){
+            deltaCout = t.getCoutTotal();//15
+            if(t.ajouterClient(clientToAdd)){
+                this.coutTotal += t.getCoutTotal() - deltaCout;
+                return true;
+            }
+        }
+        return false;
+    }
 
     @Override
     public int hashCode() {
@@ -74,40 +104,17 @@ public class Solution {
         try{
             InstanceReader read = new InstanceReader("instances/A-n32-k5.vrp");
             Instance i = read.readInstance();
-            
-            Client newClient = i.getClients().getFirst();//On teste avec le premier Client
-            Client newClient2 = i.getClients().getLast();//On teste avec le dernier Client
-            
-            
-            Tournee t = new Tournee(i);
-            t.ajouterClient(newClient);
-            t.ajouterClient(newClient2);
-            
+          
+            Solution s = new Solution(i);
            
             
-            
-            
-            
-            Tournee t2 = new Tournee(i);
             for(Client cli : i.getClients()){
-                if(t2.ajouterClient(cli)){
-                    //System.out.println(t.toString());
+                if(s.ajouterClientTourneeExistante(cli)){
                 }
                 else{
-                    //System.out.println("On ne peut pas ajouter le client: "+cli.toString());
+                    s.ajouterClientNouvelleTournee(cli);
                 }
             }
-            
-            System.out.println(t.toString());
-            System.out.println(t2.toString());
-            
-            
-            
-            Solution s = new Solution(i);
-            
-            
-            s.tournees.add(t);
-            s.tournees.add(t2);
             
             System.out.println(s.toString());
             
