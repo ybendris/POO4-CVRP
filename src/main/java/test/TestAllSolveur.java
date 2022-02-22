@@ -21,6 +21,7 @@ import java.util.Objects;
 import solution.Solution;
 import solveur.InsertionPlusProcheVoisin;
 import solveur.InsertionSimple;
+import solveur.MeilleureInsertion;
 import solveur.Solveur;
 
 /**
@@ -89,6 +90,7 @@ public class TestAllSolveur {
         // TO CHECK : constructeur par defaut de la classe InsertionSimple
         solveurs.add(new InsertionSimple());
         solveurs.add(new InsertionPlusProcheVoisin());
+        solveurs.add(new MeilleureInsertion());
         // TO ADD : par la suite vous ajouterez ici les autres solveurs a tester
         // solveurs.add(new AutreSolveurATester());
     }

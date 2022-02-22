@@ -89,11 +89,20 @@ public class Instance {
         return true;
     }
 
+    /**
+     * Créer toute les routes possibles dans les deux sens
+     * @param clientToAdd 
+     */
     public void creerRouteNouveauClient(Client clientToAdd) {
         /**
          * Ajout la route du depot de l'instance vers le nouveau client
          */
         this.depot.ajouterRoute(clientToAdd);
+        
+        /**
+         * Ajout la route retour du nouveau client vers le depot
+         */
+        clientToAdd.ajouterRoute(this.depot);
         
         for(Client c : this.clients.values()){
             c.ajouterRoute(clientToAdd);

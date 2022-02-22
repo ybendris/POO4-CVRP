@@ -60,6 +60,7 @@ public class InsertionPlusProcheVoisin implements Solveur {
                 proche = c;
             }
         }
+        System.out.println("->"+proche);
         return proche;
     }
     
@@ -68,7 +69,7 @@ public class InsertionPlusProcheVoisin implements Solveur {
         try{
             InstanceReader read = new InstanceReader("instances/A-n32-k5.vrp");
             Instance i = read.readInstance();
-          
+            
             InsertionPlusProcheVoisin algoProche = new InsertionPlusProcheVoisin();
             
             Solution procheVoisin = algoProche.solve(i);

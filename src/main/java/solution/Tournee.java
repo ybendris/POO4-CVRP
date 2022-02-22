@@ -7,6 +7,7 @@ package solution;
 import instance.Instance;
 import instance.reseau.Client;
 import instance.reseau.Depot;
+import instance.reseau.Point;
 import instance.reseau.Route;
 import io.InstanceReader;
 import io.exception.ReaderException;
@@ -14,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import operateur.InsertionClient;
 
 /**
  *
@@ -50,8 +52,8 @@ public class Tournee {
         return coutTotal;
     }
 
-    public List<Client> getClients() {
-        return clients;
+    public LinkedList<Client> getClients() {
+        return new LinkedList<Client>(clients);
     }
 
 
@@ -116,38 +118,113 @@ public class Tournee {
      * @return 
      */
     public boolean ajouterClient(Client clientToAdd){   
-        int id = clientToAdd.getId();
         if(ajoutClientPossible(clientToAdd)){
-            
             this.demandeTotale += clientToAdd.getDemande(); //maj demande totale (addition)
-           
-            if(this.clients.isEmpty()){//Ajout dans une tournee qui n'a pas de client (Figure 3a)
-                this.depot.ajouterRoute(clientToAdd);//Route aller
-                clientToAdd.ajouterRoute(this.depot);//Route retour
-                int coutAller = this.depot.getCoutVers(clientToAdd);
-                int coutRetour = clientToAdd.getCoutVers(this.depot);
-                this.coutTotal = coutAller + coutRetour; //Cout est juste un aller-retour (Figure 3b)
-            }
-            else{ //Ajout dans une tournée qui contient déjà des clients (Figure 3c)
-                
-                Client lastClient = this.clients.getLast();
-                
-                lastClient.ajouterRoute(clientToAdd);
-                clientToAdd.ajouterRoute(this.depot);
-                
-                //Calcul du cout (Figure 3d)
-                int coutVersNewClient = lastClient.getCoutVers(clientToAdd);
-                int coutNewClientVersDepot = clientToAdd.getCoutVers(this.depot);
-                int coutARetirer = lastClient.getCoutVers(this.depot);
-                
-                this.coutTotal += coutVersNewClient + coutNewClientVersDepot - coutARetirer;                              
-            }  
+            this.coutTotal += deltaCoutInsertionFin(clientToAdd);
             this.clients.addLast(clientToAdd);
             return true;
         }
         else{
             return false;
         }
+    }
+    
+    /**
+     * Doit être compris entre 0 et le nombre de clients
+     * @param position
+     * @return 
+     */
+    private Point getPrec(int position){
+        if(position == 0) return this.depot;
+        return this.clients.get(position-1);
+    }
+    
+    private Point getCurrent(int position){
+        if(position == this.getNbClients()) return this.depot;
+        return this.clients.get(position);
+    }
+    
+    private int getNbClients(){
+        return this.clients.size();
+    }
+
+    private boolean isPositionInsertionValide(int position){
+        if(0 <= position && position <= this.getNbClients()){
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Donne le coût si on veut ajouter un client à une position donnée
+     * @param position
+     * @param clientToAdd
+     * @return 
+     */
+    public int deltaCoutInsertion(int position, Client clientToAdd){
+        if(!isPositionInsertionValide(position))
+            return Integer.MAX_VALUE;
+        if(clientToAdd == null)
+            return Integer.MAX_VALUE;
+
+        int deltaCout = 0;
+        
+        if(this.clients.isEmpty()){ //Ajout dans une tournee qui n'a pas de client
+            deltaCout = this.depot.getCoutVers(clientToAdd);
+            deltaCout += clientToAdd.getCoutVers(this.depot);
+            
+            //deltaCout est juste un aller-retour (Figure 3b)
+        }
+        else{ //Ajout dans une tournée qui contient déjà des clients à une certaine position
+            Point avant = getPrec(position);
+            Point apres = getCurrent(position);
+            deltaCout += avant.getCoutVers(clientToAdd);
+            deltaCout += clientToAdd.getCoutVers(apres);
+            deltaCout -= avant.getCoutVers(apres);
+        }
+        return deltaCout;                              
+    }
+    
+    public int deltaCoutInsertionFin(Client clientToAdd){
+        return deltaCoutInsertion(this.getNbClients(),clientToAdd);
+    }
+    
+    
+    public InsertionClient getMeilleureInsertion(Client clientToInsert){
+        InsertionClient meilleur = new InsertionClient();
+        if(!this.ajoutClientPossible(clientToInsert)) return meilleur;//return d'une valeur par 
+               
+        
+
+        
+        for(int pos = 0; pos<this.clients.size()+1; pos++){
+            InsertionClient courrant = new InsertionClient(this, clientToInsert, pos);
+            if(courrant.isMeilleur(meilleur))
+                meilleur = courrant;
+        }
+        
+        return meilleur;
+    }
+    
+    public boolean doInsertion(InsertionClient infos){
+        if(infos == null) return false;
+        if(!infos.isMouvementRealisable()) return false;
+        
+        Client clientToAdd = infos.getClientToInsert();
+        /**
+         * Ajoute le client à la position indiqué par l'opérateur d'insertion
+         */
+        this.clients.add(infos.getPosition(), clientToAdd);
+        this.coutTotal += infos.getDeltaCout(); //MAJ cout total
+        this.demandeTotale += clientToAdd.getDemande(); //TODO demande totale
+        
+        if (!this.check()){
+            System.out.println("Mauvaise insertion du client, "+clientToAdd);
+            System.out.println(infos);
+            System.exit(-1); //Termine le programme
+        }
+        
+        return true;
     }
     
     
@@ -168,7 +245,7 @@ public class Tournee {
         var coutReel = 0;
         
         coutReel += this.depot.getCoutVers(this.clients.getFirst());//Depot vers premier
-        for(int i = 0; i < this.clients.size()-1 ; i++){
+        for(int i = 0; i < this.getNbClients()-1 ; i++){
             Client courant  = this.clients.get(i);
             Client suivant  = this.clients.get(i+1);
             
@@ -179,6 +256,7 @@ public class Tournee {
         return (coutAverif == coutReel);
     }
     
+    
     private boolean verifDemande(){
         var demandeAverif = this.demandeTotale;
         var demandeReel = 0;
@@ -187,7 +265,11 @@ public class Tournee {
             demandeReel += cli.getDemande();
         }
         
-        return (demandeAverif == demandeReel);
+        if(demandeAverif == demandeReel){
+            return true;
+        }
+        System.out.println("Erreur: la demande de la Tournee n'est pas égale à la somme des demandes des clients");
+        return false;
     }
     
     /**
@@ -195,7 +277,11 @@ public class Tournee {
      * @return 
      */
     private boolean verifCapacite(){
-        return this.demandeTotale<=this.getCapacite();
+        if(this.demandeTotale<=this.getCapacite()){
+            return true;
+        }
+        System.out.println("Erreur: la demande totale est supérieure à la capacité de la Tournee");
+        return false;
     }
 
     @Override

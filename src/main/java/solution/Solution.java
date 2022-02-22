@@ -11,6 +11,7 @@ import io.exception.ReaderException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import operateur.InsertionClient;
 
 /**
  *
@@ -104,6 +105,29 @@ public class Solution {
         System.out.println("Cout à vérifier: "+ coutAverif+" Cout réel: "+coutReel);
         return coutAverif == coutReel;
     }
+    
+    public InsertionClient getMeilleureInsertion(Client clientToInsert){
+        InsertionClient meilleur = new InsertionClient();
+        
+        for(Tournee t : this.tournees){
+            InsertionClient courrant = t.getMeilleureInsertion(clientToInsert);
+            if(courrant.isMeilleur(meilleur)) meilleur = courrant;
+        }
+        
+        return meilleur;
+    }
+    
+    public boolean doInsertion(InsertionClient infos){
+        if(infos == null) return false;
+        if(!this.tournees.contains(infos.getTournee())) return false;
+        if(!infos.doMouvementIfRealisable())return false;
+        
+        this.coutTotal += infos.getDeltaCout();
+
+        return true;
+    }
+    
+    
     
     private boolean verifClients(){
         List<Client> clientsAverif = this.instance.getClients();
