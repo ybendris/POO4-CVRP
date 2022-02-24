@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 // TO CHECK : import des classes Solution, InsertionSimple et Solveur
 import solution.Solution;
+import solveur.ClarkeAndWright;
 import solveur.InsertionPlusProcheVoisin;
 import solveur.InsertionSimple;
 import solveur.MeilleureInsertion;
@@ -91,6 +92,7 @@ public class TestAllSolveur {
         solveurs.add(new InsertionSimple());
         solveurs.add(new InsertionPlusProcheVoisin());
         solveurs.add(new MeilleureInsertion());
+        solveurs.add(new ClarkeAndWright());
         // TO ADD : par la suite vous ajouterez ici les autres solveurs a tester
         // solveurs.add(new AutreSolveurATester());
     }

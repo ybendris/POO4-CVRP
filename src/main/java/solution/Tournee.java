@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import operateur.FusionTournees;
 import operateur.InsertionClient;
 
 /**
@@ -189,13 +190,31 @@ public class Tournee {
         return deltaCoutInsertion(this.getNbClients(),clientToAdd);
     }
     
+    /**
+     * Un cout négatif renvoyé par cette méthode est un gain positif, on améliore la solution
+     * @param aFusionner
+     * @return 
+     */
+    public int deltaCoutFusion(Tournee aFusionner){
+        if(aFusionner == null)
+            return Integer.MAX_VALUE;
+
+        int deltaCout = 0;
+        
+        Point dernierClientTournee1 = this.clients.getLast();
+        Point premierClientTournee2 = aFusionner.clients.getFirst();
+        
+        deltaCout += dernierClientTournee1.getCoutVers(premierClientTournee2);
+        deltaCout -= premierClientTournee2.getCoutVers(this.depot);
+        deltaCout -= this.depot.getCoutVers(dernierClientTournee1);
+        
+        return deltaCout;                              
+    }
+    
     
     public InsertionClient getMeilleureInsertion(Client clientToInsert){
         InsertionClient meilleur = new InsertionClient();
-        if(!this.ajoutClientPossible(clientToInsert)) return meilleur;//return d'une valeur par 
-               
-        
-
+        if(!this.ajoutClientPossible(clientToInsert)) return meilleur;//return d'une valeur par défaut
         
         for(int pos = 0; pos<this.clients.size()+1; pos++){
             InsertionClient courrant = new InsertionClient(this, clientToInsert, pos);
@@ -223,6 +242,73 @@ public class Tournee {
             System.out.println(infos);
             System.exit(-1); //Termine le programme
         }
+        
+        return true;
+    }
+    
+    
+    public boolean fusionTourneesPossible(Tournee tourneeToFusion){
+        if(tourneeToFusion == null) return false;
+        /**
+         * Capacité après fusion dépassée
+         */
+        if(this.demandeTotale + tourneeToFusion.demandeTotale > this.capacite) return false;
+        /**
+         * Deux tournees identiques
+         */
+        if(this.equals(tourneeToFusion)) return false;
+        
+        /**
+         * Tournee courrante vide
+         */
+        if(this.getNbClients() == 0) return false;
+        
+        /**
+         * Tournee à fusionner vide
+         */
+        if(tourneeToFusion.getNbClients() == 0) return false;
+        
+        return true;
+    }
+    
+    
+    
+    public FusionTournees getMeilleureFusion(LinkedList<Tournee> autresTournees){
+        FusionTournees meilleure = new FusionTournees();
+               
+        for(Tournee t : autresTournees){
+            if(this.fusionTourneesPossible(t)){
+                FusionTournees courrante = new FusionTournees(this,t);
+                if(courrante.isMeilleur(meilleure))
+                    meilleure = courrante;   
+            }
+        }
+        
+        return meilleure;
+    }
+              
+    public boolean doFusion(FusionTournees infos){
+        if(infos == null) return false;
+        if(!infos.isMouvementRealisable()) return false;
+        //if(!infos.isMouvementAmeliorant()) return false;
+        
+        Tournee tourneeToFusion = infos.getTourneeToFusion();
+        /**
+         * Ajoute tous les clients de la tournee a fusionner à la fin
+         */
+        this.clients.addAll(tourneeToFusion.getClients());
+        /**
+         * Il faut AJOUTER le delta cout
+         */
+        this.coutTotal += tourneeToFusion.getCoutTotal() + infos.getDeltaCout();
+        this.demandeTotale += tourneeToFusion.getDemandeTotale();
+        
+        if (!this.check()){
+            System.out.println("Mauvaise fusion des tournees, "+this.toString());
+            System.out.println(infos);
+            System.exit(-1); //Termine le programme
+        }
+        
         
         return true;
     }
