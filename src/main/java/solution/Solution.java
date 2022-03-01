@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.Objects;
 import operateur.FusionTournees;
 import operateur.InsertionClient;
+import operateur.OperateurIntraTournee;
+import operateur.OperateurLocal;
+import operateur.TypeOperateurLocal;
 
 /**
  *
@@ -118,6 +121,27 @@ public class Solution {
         return meilleur;
     }
     
+    private OperateurLocal getMeilleurOperateurIntra(TypeOperateurLocal type){
+        OperateurLocal best = OperateurLocal.getOperateur(type);
+        for(Tournee t : this.tournees){
+            OperateurLocal op = t.getMeilleurOperateurIntra(type);
+            if(op.isMeilleur(best)) {
+                best = op;
+            }
+        }
+        return best;
+    }
+    
+    public OperateurLocal getMeilleurOperateurLocal(TypeOperateurLocal type) {
+        if(OperateurLocal.getOperateur(type) instanceof OperateurIntraTournee){
+            return this.getMeilleurOperateurIntra(type);
+        }
+        else{
+            return null;
+        }
+    }
+    
+    
     public boolean doInsertion(InsertionClient infos){
         if(infos == null) return false;
         if(!this.tournees.contains(infos.getTournee())) return false;
@@ -152,6 +176,8 @@ public class Solution {
         
         return meilleure;
     }
+    
+    
     
     private boolean verifClients(){
         List<Client> clientsAverif = this.instance.getClients();

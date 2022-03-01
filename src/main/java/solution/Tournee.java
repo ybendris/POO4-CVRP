@@ -17,6 +17,10 @@ import java.util.Map;
 import java.util.Objects;
 import operateur.FusionTournees;
 import operateur.InsertionClient;
+import operateur.IntraDeplacement;
+import operateur.OperateurIntraTournee;
+import operateur.OperateurLocal;
+import operateur.TypeOperateurLocal;
 
 /**
  *
@@ -312,6 +316,101 @@ public class Tournee {
         
         return true;
     }
+    
+    /**
+     * Renvoie null quand la position n'est pas correcte
+     * @param pos
+     * @return 
+     */
+    public Client getClientByPosition(int pos){
+        if(pos < 0 || pos >= this.getNbClients()){
+            return null;
+        }
+        return this.clients.get(pos);
+    }
+    
+    
+    private Point getNext(int position){
+        if(position >= this.getNbClients()-1) return this.depot;
+        return this.clients.get(position+1);
+    }
+    
+    private boolean isPositionValide(int position){
+        if(position >= 0 && position < this.getNbClients())
+            return true;
+        
+        return false;
+    }
+    
+    public int deltaCoutSuppression(int position){
+        if(!isPositionValide(position))
+            return Integer.MAX_VALUE;
+        
+        int deltaCout = 0;
+        
+        if(this.clients.size() == 1){ //Suppression dans une tournee qui a un seul client
+            deltaCout -= this.depot.getCoutVers(this.getCurrent(position));
+            deltaCout -= this.getClientByPosition(position).getCoutVers(this.depot);
+        }
+        else{
+            deltaCout -= this.getPrec(position).getCoutVers(this.getCurrent(position));
+            deltaCout -= this.getCurrent(position).getCoutVers(this.getNext(position));
+            deltaCout += this.getPrec(position).getCoutVers(this.getNext(position));
+        }
+        return deltaCout;
+    }
+    
+    public int deltaCoutDeplacement(int positionI, int positionJ){
+        //méthode avec une visibilité private
+        if(!isPositionValide(positionI)){
+            return Integer.MAX_VALUE;
+        }
+        
+        if(!isPositionValide(positionJ))
+            return Integer.MAX_VALUE;
+        
+        if(positionI == positionJ)
+            return Integer.MAX_VALUE;
+
+        if(Math.abs(positionI - positionJ) == 1) 
+            return Integer.MAX_VALUE;
+        
+        int deltaCout = 0;
+        
+        Client cli = this.getClientByPosition(positionI);
+        
+        deltaCout += this.deltaCoutSuppression(positionI) + this.deltaCoutInsertion(positionJ, cli);
+        
+        return deltaCout;
+    }
+    
+    
+    public boolean doDeplacement(IntraDeplacement infos){
+        //todo
+        /*
+        MAJ liste des clients
+        MAJ cout
+        
+        USE check()
+        */
+        
+        return false;
+    }
+    
+    public OperateurLocal getMeilleurOperateurIntra(TypeOperateurLocal type) {
+        OperateurLocal best = OperateurLocal.getOperateur(type);
+        for(int i=0; i<clients.size(); i++) {
+            for(int j=0; j<clients.size()+1; j++) {
+                OperateurIntraTournee op = OperateurLocal.getOperateurIntra(type, this, i, j);
+                if(op.isMeilleur(best)) {
+                    best = op;
+                }
+            }
+        }
+        return best;
+    }
+
+    
     
     
     /**
