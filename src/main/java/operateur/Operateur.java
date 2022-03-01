@@ -44,7 +44,7 @@ public abstract class Operateur {
      * @return 
      */
     public boolean isMeilleur(Operateur op){
-        if(op == null) return true;
+        if(op == null) return false;
         return this.getDeltaCout() < op.getDeltaCout();
     }
 
