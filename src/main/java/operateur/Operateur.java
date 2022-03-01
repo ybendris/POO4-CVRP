@@ -38,6 +38,12 @@ public abstract class Operateur {
         return true;
     }
     
+    public boolean isMouvementAmeliorant(){
+        if(deltaCout < 0)
+            return true;
+        return false;
+    }
+    
     /**
      * Renvoie true si l'Opérateur courant est strictement meilleur que l'opérateur passé en param
      * @param op

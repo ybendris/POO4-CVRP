@@ -1,14 +1,14 @@
-;Intertion Simple;;;InsertionPlusProcheVoisin;;;Meilleure Insertion;;
-;cout;tps(ms);valide ?;cout;tps(ms);valide ?;cout;tps(ms);valide ?
-A-n32-k5;1 914;4;true;953;36;true;1 152;13;true
-A-n39-k5;2 119;0;true;1 147;16;true;1 112;2;true
-A-n54-k7;3 445;0;true;1 394;28;true;1 551;6;true
-A-n80-k10;5 441;1;true;2 304;23;true;2 366;25;true
-B-n31-k5;1 519;1;true;834;8;true;818;0;true
-B-n45-k6;1 837;2;true;845;16;true;876;2;true
-B-n57-k7;4 355;1;true;1 398;3;true;1 614;3;true
-B-n78-k10;4 369;1;true;1 514;25;true;1 521;5;true
-E-n101-k14;2 688;0;true;1 398;5;true;1 634;3;true
-P-n101-k4;2 287;0;true;950;14;true;947;6;true
+;Intertion Simple;;;InsertionPlusProcheVoisin;;;Meilleure Insertion;;;ClarkeAndWright;;
+;cout;tps(ms);valide ?;cout;tps(ms);valide ?;cout;tps(ms);valide ?;cout;tps(ms);valide ?
+A-n32-k5;1 914;2;true;953;6;true;1 152;2;true;834;5;true
+A-n39-k5;2 119;1;true;1 147;1;true;1 112;1;true;907;3;true
+A-n54-k7;3 445;0;true;1 394;16;true;1 551;1;true;1 172;3;true
+A-n80-k10;5 441;0;true;2 304;4;true;2 366;3;true;1 818;11;true
+B-n31-k5;1 519;0;true;834;1;true;818;0;true;679;0;true
+B-n45-k6;1 837;0;true;845;1;true;876;1;true;725;1;true
+B-n57-k7;4 355;0;true;1 398;1;true;1 614;1;true;1 239;2;true
+B-n78-k10;4 369;0;true;1 514;2;true;1 521;0;true;1 261;5;true
+E-n101-k14;2 688;0;true;1 398;2;true;1 634;1;true;1 128;9;true
+P-n101-k4;2 287;0;true;950;1;true;947;2;true;751;7;true
 
-SOMME;29 974;10;true;12 737;174;true;13 591;65;true
+SOMME;29 974;3;true;12 737;35;true;13 591;12;true;10 514;46;true

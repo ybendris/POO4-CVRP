@@ -47,7 +47,7 @@ public class InsertionClient extends Operateur {
     
     @Override
     public String toString() {
-        return "InsertionClient{" + "clientToInsert=" + clientToInsert + ", position=" + position + '}';
+        return "InsertionClient{" + "clientToInsert=" + clientToInsert + ", position=" + position + ", coutInsertion=" + deltaCout + '}';
     }
     
     @Override

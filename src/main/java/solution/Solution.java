@@ -11,6 +11,7 @@ import io.exception.ReaderException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import operateur.FusionTournees;
 import operateur.InsertionClient;
 
 /**
@@ -127,7 +128,30 @@ public class Solution {
         return true;
     }
     
+    public boolean doFusion(FusionTournees infos){
+        if(infos == null) return false;
+        if(!infos.doMouvementIfRealisable())return false;
+        this.coutTotal += infos.getDeltaCout();
+        
+        /**
+         * Suppression de la solution, la tournée qui a été fusionnée
+         */
+        this.tournees.remove(infos.getTourneeToFusion());
+        
+        
+        return true;
+    }
     
+    public FusionTournees getMeilleurFusion(){
+        FusionTournees meilleure = new FusionTournees();
+        for(Tournee t1 : this.tournees){
+            FusionTournees courrante = t1.getMeilleureFusion(this.getTournees());
+            if(courrante.isMeilleur(meilleure)) meilleure = courrante;
+        }
+        
+        
+        return meilleure;
+    }
     
     private boolean verifClients(){
         List<Client> clientsAverif = this.instance.getClients();
@@ -189,6 +213,12 @@ public class Solution {
         s += "\n}"; 
         return s;
     }
+
+    public LinkedList<Tournee> getTournees() {
+        return tournees;
+    }
+    
+    
     
     public static void main(String[] args) {
         try{
