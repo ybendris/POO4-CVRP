@@ -31,12 +31,12 @@ public class IntraDeplacement extends OperateurIntraTournee {
 
     @Override
     protected boolean doMouvement() {
-        return false;
+        return this.tournee.doDeplacement(this);
     }
 
     @Override
     public String toString() {
-        return "IntraDeplacement{" +  "positionI=" + positionI +  ", positionJ=" + positionJ + ", coutDeplacement=" + deltaCout + clientJ+ '}';
+        return "IntraDeplacement{" +  "positionI=" + positionI +  ", positionJ=" + positionJ + ", coutDeplacement=" + deltaCout +", clientI="+ clientI +", clientJ="+ clientJ+",Tournee="+tournee+ '}';
     }
     
     

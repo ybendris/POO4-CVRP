@@ -148,7 +148,7 @@ public class Solution {
         if(!infos.doMouvementIfRealisable())return false;
         
         this.coutTotal += infos.getDeltaCout();
-
+        
         return true;
     }
     
@@ -161,7 +161,22 @@ public class Solution {
          * Suppression de la solution, la tournée qui a été fusionnée
          */
         this.tournees.remove(infos.getTourneeToFusion());
+             
         
+        return true;
+    }
+    
+    public boolean doMouvementRechercheLocale(OperateurLocal infos){
+        if(infos == null) return false;
+        if(!infos.doMouvementIfRealisable())return false;
+        this.coutTotal += infos.getDeltaCout();
+        
+        
+        if (!this.check()){
+            System.out.println("Mauvais mouvement recherche locale, "+this.toString());
+            System.out.println(infos);
+            System.exit(-1); //Termine le programme
+        }
         
         return true;
     }

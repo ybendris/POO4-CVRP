@@ -44,12 +44,12 @@ public abstract class OperateurLocal extends Operateur {
         switch(type) {
             case INTRA_DEPLACEMENT:
                 return new IntraDeplacement();
-            case INTRA_ECHANGE:
+            /*case INTRA_ECHANGE:
                 return new IntraEchange();
             case INTER_DEPLACEMENT:
                 return new InterDeplacement();
             case INTER_ECHANGE:
-                return new InterEchange();
+                return new InterEchange();*/
             default:
                 return null;
         }
@@ -60,8 +60,8 @@ public abstract class OperateurLocal extends Operateur {
         switch(type) {
             case INTRA_DEPLACEMENT:
                 return new IntraDeplacement(tournee, positionI, positionJ);
-            case INTRA_ECHANGE:
-                return new IntraEchange(tournee, positionI, positionJ);
+            /*case INTRA_ECHANGE:
+                return new IntraEchange(tournee, positionI, positionJ);*/
             default:
                 return null;
         }
@@ -69,14 +69,31 @@ public abstract class OperateurLocal extends Operateur {
     
     public static OperateurInterTournees getOperateurInter(TypeOperateurLocal type, Tournee tournee, Tournee autreTournee, int positionI, int positionJ) {
         switch(type) {
-            case INTER_DEPLACEMENT:
+            /*case INTER_DEPLACEMENT:
                 return new InterDeplacement(tournee, autreTournee, positionI, positionJ);
             case INTER_ECHANGE:
-                return new InterEchange(tournee, autreTournee, positionI, positionJ);
+                return new InterEchange(tournee, autreTournee, positionI, positionJ);*/
             default:
                 return null;
         }
     }
+
+    public int getPositionI() {
+        return positionI;
+    }
+
+    public int getPositionJ() {
+        return positionJ;
+    }
+
+    public Client getClientI() {
+        return clientI;
+    }
+
+    public Client getClientJ() {
+        return clientJ;
+    }
+    
     
     
     

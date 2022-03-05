@@ -65,6 +65,12 @@ public abstract class Operateur {
         return true;
     }
 
+    public Tournee getTournee() {
+        return tournee;
+    }
+    
+    
+
     @Override
     public String toString() {
         return "Operateur{" + "tournee=" + tournee + ", \ndeltaCout=" + deltaCout + '}';

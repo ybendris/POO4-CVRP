@@ -317,6 +317,70 @@ public class Tournee {
         return true;
     }
     
+    
+    public int deltaCoutDeplacement(int positionI, int positionJ){
+        //méthode avec une visibilité private
+        if(!isPositionValide(positionI)){
+            return Integer.MAX_VALUE;
+        }
+        
+        if(!isPositionValide(positionJ))
+            return Integer.MAX_VALUE;
+        
+        if(positionI == positionJ)
+            return Integer.MAX_VALUE;
+
+        if(Math.abs(positionI - positionJ) == 1) 
+            return Integer.MAX_VALUE;
+        
+        int deltaCout = 0;
+        
+        Client cli = this.getClientByPosition(positionI);
+        
+        deltaCout = this.deltaCoutSuppression(positionI) + this.deltaCoutInsertion(positionJ, cli);
+        
+        return deltaCout;
+    }
+    
+    
+    public boolean doDeplacement(IntraDeplacement infos){
+        if(infos == null) return false;
+        if(!infos.isMouvementRealisable()) return false;
+        
+        int posI = infos.getPositionI();
+        int posJ = infos.getPositionJ();
+        
+        Client clientI = infos.getClientI();
+        
+        
+        System.out.println("Avant: "+this);
+        
+        /**
+         * En voulant l'insérer à la positionJ, cela va décaler le reste de la list (incrément de 1 de le leur index)
+         */
+        this.clients.add(posJ, clientI);
+        
+        if(posI < posJ){
+            this.clients.remove(posI);
+        }
+        else{
+            this.clients.remove(posI+1);
+        }
+        
+        this.coutTotal += infos.getDeltaCout();
+        
+        System.out.println("Apres: "+this);
+        
+        if (!this.check()){
+            System.out.println("Mauvais déplacement intra-tournee, "+this.toString());
+            System.out.println(infos);
+            System.exit(-1); //Termine le programme
+        }
+        
+        
+        return true;
+    }
+    
     /**
      * Renvoie null quand la position n'est pas correcte
      * @param pos
@@ -360,43 +424,6 @@ public class Tournee {
         return deltaCout;
     }
     
-    public int deltaCoutDeplacement(int positionI, int positionJ){
-        //méthode avec une visibilité private
-        if(!isPositionValide(positionI)){
-            return Integer.MAX_VALUE;
-        }
-        
-        if(!isPositionValide(positionJ))
-            return Integer.MAX_VALUE;
-        
-        if(positionI == positionJ)
-            return Integer.MAX_VALUE;
-
-        if(Math.abs(positionI - positionJ) == 1) 
-            return Integer.MAX_VALUE;
-        
-        int deltaCout = 0;
-        
-        Client cli = this.getClientByPosition(positionI);
-        
-        deltaCout += this.deltaCoutSuppression(positionI) + this.deltaCoutInsertion(positionJ, cli);
-        
-        return deltaCout;
-    }
-    
-    
-    public boolean doDeplacement(IntraDeplacement infos){
-        //todo
-        /*
-        MAJ liste des clients
-        MAJ cout
-        
-        USE check()
-        */
-        
-        return false;
-    }
-    
     public OperateurLocal getMeilleurOperateurIntra(TypeOperateurLocal type) {
         OperateurLocal best = OperateurLocal.getOperateur(type);
         for(int i=0; i<clients.size(); i++) {
@@ -410,9 +437,6 @@ public class Tournee {
         return best;
     }
 
-    
-    
-    
     /**
      * Checker de la class Tournee
      * @return 
@@ -430,6 +454,9 @@ public class Tournee {
         var coutReel = 0;
         
         coutReel += this.depot.getCoutVers(this.clients.getFirst());//Depot vers premier
+        /**
+         * Le dernier client n'a pas de suivant, on s'arrette avant
+         */
         for(int i = 0; i < this.getNbClients()-1 ; i++){
             Client courant  = this.clients.get(i);
             Client suivant  = this.clients.get(i+1);
@@ -438,7 +465,11 @@ public class Tournee {
         }
         coutReel += this.clients.getLast().getCoutVers(this.depot);
         
-        return (coutAverif == coutReel);
+        if(coutAverif == coutReel){
+            return true;
+        }
+        System.out.println("Erreur: le cout de la tournee n'est pas bon, on veut:"+coutAverif+", on a:"+ coutReel);
+        return false;
     }
     
     

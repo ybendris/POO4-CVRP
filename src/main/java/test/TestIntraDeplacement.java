@@ -46,13 +46,15 @@ public class TestIntraDeplacement {
         System.out.println(t.deltaCoutDeplacement(4, 2));//return -30
         System.out.println(t.deltaCoutDeplacement(1, 3));//return 0
         System.out.println(t.deltaCoutDeplacement(2, 4));//return -20
+        
+        System.out.println("-30:"+t.deltaCoutSuppression(4)+t.deltaCoutSuppression(2)); //-3
 
         IntraDeplacement op = new IntraDeplacement(t,2,4); //-20
         IntraDeplacement op1 = new IntraDeplacement(t,4,2); //-30
         System.out.println(op.toString());//2   4   et -20
         System.out.println(op1.toString());//4 2 et -30
         
-        OperateurLocal op2 = OperateurIntraTournee.getOperateurIntra(TypeOperateurLocal.INTRA_DEPLACEMENT,t,2,4);
+        OperateurLocal op2 = OperateurIntraTournee.getOperateurIntra(TypeOperateurLocal.INTRA_DEPLACEMENT,t,2,5);
         System.out.println(op2.toString());
                 
         System.out.println(op1.isMeilleur(op));//true 
@@ -60,8 +62,18 @@ public class TestIntraDeplacement {
         
         System.out.println(op1.isMouvementRealisable());//true
         System.out.println(op1.isMouvementAmeliorant());//true
-     
+        System.out.println(op2.isMouvementRealisable()); //false
         
-        System.out.println(t.getMeilleurOperateurIntra(TypeOperateurLocal.INTRA_DEPLACEMENT));
+       
+        System.out.println(t.toString());        
+        OperateurLocal bestOperateur = t.getMeilleurOperateurIntra(TypeOperateurLocal.INTRA_DEPLACEMENT);
+        System.out.println(bestOperateur);
+        
+        bestOperateur.doMouvementIfRealisable();
+        
+        
+        
+        System.out.println(t.toString());
+        System.out.println(t.check());//true
     }
 }
