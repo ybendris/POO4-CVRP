@@ -167,6 +167,7 @@ public class Tournee {
      * @return 
      */
     public int deltaCoutInsertion(int position, Client clientToAdd){
+        /*
         if(!isPositionInsertionValide(position))
             return Integer.MAX_VALUE;
         if(clientToAdd == null)
@@ -187,7 +188,28 @@ public class Tournee {
             deltaCout += clientToAdd.getCoutVers(apres);
             deltaCout -= avant.getCoutVers(apres);
         }
-        return deltaCout;                              
+        return deltaCout; 
+        */
+         if(!this.isPositionInsertionValide(position) || clientToAdd == null){
+            return Integer.MAX_VALUE;
+        }
+        
+        int deltaCout = 0;
+        
+        if(this.clients.isEmpty()){
+            deltaCout = this.depot.getCoutVers(clientToAdd);
+            deltaCout += clientToAdd.getCoutVers(this.depot);
+        }
+        else{
+            Point cPrec = this.getPrec(position);
+            Point cCour = this.getCurrent(position);
+            
+            deltaCout -= cPrec.getCoutVers(cCour);
+            deltaCout += cPrec.getCoutVers(clientToAdd);
+            deltaCout += clientToAdd.getCoutVers(cCour);
+        }
+        
+        return deltaCout;
     }
     
     public int deltaCoutInsertionFin(Client clientToAdd){
@@ -324,7 +346,7 @@ public class Tournee {
             return Integer.MAX_VALUE;
         }
         
-        if(!isPositionValide(positionJ))
+        if(!isPositionInsertionValide(positionJ))
             return Integer.MAX_VALUE;
         
         if(positionI == positionJ)
@@ -353,7 +375,7 @@ public class Tournee {
         Client clientI = infos.getClientI();
         
         
-        System.out.println("Avant: "+this);
+        //System.out.println("Avant: "+this);
         
         /**
          * En voulant l'insérer à la positionJ, cela va décaler le reste de la list (incrément de 1 de le leur index)
@@ -369,7 +391,7 @@ public class Tournee {
         
         this.coutTotal += infos.getDeltaCout();
         
-        System.out.println("Apres: "+this);
+        //System.out.println("Apres: "+this);
         
         if (!this.check()){
             System.out.println("Mauvais déplacement intra-tournee, "+this.toString());
@@ -400,28 +422,37 @@ public class Tournee {
     }
     
     private boolean isPositionValide(int position){
-        if(position >= 0 && position < this.getNbClients())
+        /*if(position >= 0 && position < this.getNbClients())
             return true;
         
-        return false;
+        return false;*/
+        
+        if(position <0 || position > this.getNbClients()+1){
+            return false;
+        }
+        return true;
     }
     
     public int deltaCoutSuppression(int position){
-        if(!isPositionValide(position))
+        Point cPrec = this.getPrec(position);
+        Point cCour = this.getCurrent(position);
+        Point cNext = this.getNext(position);
+        int deltaCoutSuppression = 0;
+        
+        if(!this.isPositionInsertionValide(position)){
             return Integer.MAX_VALUE;
+        }
         
-        int deltaCout = 0;
-        
-        if(this.clients.size() == 1){ //Suppression dans une tournee qui a un seul client
-            deltaCout -= this.depot.getCoutVers(this.getCurrent(position));
-            deltaCout -= this.getClientByPosition(position).getCoutVers(this.depot);
+        if(this.clients.size()==1){
+            deltaCoutSuppression -= cCour.getCoutVers(this.depot);
+            deltaCoutSuppression -= this.depot.getCoutVers(cCour);
         }
         else{
-            deltaCout -= this.getPrec(position).getCoutVers(this.getCurrent(position));
-            deltaCout -= this.getCurrent(position).getCoutVers(this.getNext(position));
-            deltaCout += this.getPrec(position).getCoutVers(this.getNext(position));
+            deltaCoutSuppression += cPrec.getCoutVers(cNext);
+            deltaCoutSuppression -= cPrec.getCoutVers(cCour);
+            deltaCoutSuppression -= cCour.getCoutVers(cNext);
         }
-        return deltaCout;
+        return deltaCoutSuppression;
     }
     
     public OperateurLocal getMeilleurOperateurIntra(TypeOperateurLocal type) {
@@ -511,9 +542,7 @@ public class Tournee {
         s += "\n}"; 
         return s;
     }
-    
-    
-    
+        
     public static void main(String[] args) {
         try{
             InstanceReader read = new InstanceReader("instances/A-n32-k5.vrp");

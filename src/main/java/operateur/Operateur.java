@@ -49,9 +49,19 @@ public abstract class Operateur {
      * @param op
      * @return 
      */
+    /*public boolean isMeilleur(Operateur op){
+        if(op == null) return true;
+        return this.getDeltaCout() <= op.getDeltaCout();
+    }*/
+    
     public boolean isMeilleur(Operateur op){
-        if(op == null) return false;
-        return this.getDeltaCout() < op.getDeltaCout();
+        if(op == null){
+            return true;
+        }
+        if(op.getDeltaCout() <= this.getDeltaCout() ){
+            return false;
+        }
+        return true;
     }
 
     protected abstract int evalDeltaCout();

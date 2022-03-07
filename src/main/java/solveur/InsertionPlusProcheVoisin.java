@@ -60,7 +60,7 @@ public class InsertionPlusProcheVoisin implements Solveur {
                 proche = c;
             }
         }
-        System.out.println("->"+proche);
+        //System.out.println("->"+proche);
         return proche;
     }
     

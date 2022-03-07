@@ -41,7 +41,8 @@ public class RechercheLocale implements Solveur{
         InsertionSimple algoSimple = new InsertionSimple();    
         Solution s = algoSimple.solve(instance);
         
-        System.out.println("Solution Insertion simple: "+s);
+        //System.out.println("Solution Insertion simple: "+s);
+        System.out.println(s.getCoutTotal());
         
         boolean improve = true;
         
