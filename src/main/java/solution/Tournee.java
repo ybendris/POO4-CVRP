@@ -17,7 +17,9 @@ import java.util.Map;
 import java.util.Objects;
 import operateur.FusionTournees;
 import operateur.InsertionClient;
+import operateur.InterDeplacement;
 import operateur.IntraDeplacement;
+import operateur.OperateurInterTournees;
 import operateur.OperateurIntraTournee;
 import operateur.OperateurLocal;
 import operateur.TypeOperateurLocal;
@@ -100,8 +102,6 @@ public class Tournee {
     
     
     private boolean ajoutClientPossible(Client clientToAdd){
-        int id = clientToAdd.getId();
-        
         if(clientToAdd == null){
             return false;
         }
@@ -216,6 +216,14 @@ public class Tournee {
         return deltaCoutInsertion(this.getNbClients(),clientToAdd);
     }
     
+    public int deltaCoutInsertionInter(int position, Client clientToAdd){
+        if(this.ajoutClientPossible(clientToAdd)){
+            return this.deltaCoutInsertion(position, clientToAdd);
+        }
+        return Integer.MAX_VALUE;
+    }
+    
+    
     /**
      * Un cout négatif renvoyé par cette méthode est un gain positif, on améliore la solution
      * @param aFusionner
@@ -296,6 +304,7 @@ public class Tournee {
         
         return true;
     }
+    
     
     
     
@@ -403,6 +412,56 @@ public class Tournee {
         return true;
     }
     
+    
+    public boolean doDeplacement(InterDeplacement infos){
+        if(infos == null) return false;
+        if(!infos.isMouvementRealisable()) return false;
+        
+        
+        int posI = infos.getPositionI();
+        int posJ = infos.getPositionJ();
+        
+        Client clientI = infos.getClientI();
+       
+        Tournee autreTournee = infos.getAutreTournee();
+        
+        autreTournee.clients.add(posJ, clientI);
+        this.clients.remove(posI);
+
+        System.out.println(infos.getDeltaCoutTournee()+" -- "+infos.getDeltaCoutAutreTournee());
+        
+        //maj cout
+        this.coutTotal += infos.getDeltaCoutTournee();
+        autreTournee.coutTotal += infos.getDeltaCoutAutreTournee();
+        
+        //maj demande
+        this.demandeTotale -= clientI.getDemande();
+        autreTournee.demandeTotale += clientI.getDemande();
+        
+        /*
+        TODO:
+        Modifier la liste des clients de la tournée courante 
+        Modifier la liste des clients de l’autre tournée 
+        Modifier coût total et demande totale des deux tournées.
+        Appeler check pour les deux tournees
+        */
+        if (!this.check()){
+            System.out.println("Mauvais déplacement inter-tournee, (courante)"+this.toString()+"\n"+autreTournee.toString());
+            System.out.println(infos);
+            System.exit(-1); //Termine le programme
+        }
+        
+        if (!infos.getAutreTournee().check()){
+            System.out.println("Mauvais déplacement inter-tournee, (autre)"+autreTournee.toString());
+            System.out.println(infos);
+            System.exit(-1); //Termine le programme
+        }
+        
+        
+        return true;
+    } 
+    
+    
     /**
      * Renvoie null quand la position n'est pas correcte
      * @param pos
@@ -468,6 +527,23 @@ public class Tournee {
         return best;
     }
 
+    
+    public OperateurLocal getMeilleurOperateurInter(Tournee autreTournee, TypeOperateurLocal type){
+        OperateurLocal best = OperateurLocal.getOperateur(type);
+        if(!this.equals(autreTournee)) {
+            for(int i=0; i<clients.size(); i++) {
+                for(int j=0; j<autreTournee.getNbClients()+1; j++) {
+                    OperateurInterTournees op = OperateurLocal.getOperateurInter(type, this,autreTournee, i, j);
+                    if(op.isMeilleur(best)) {
+                        best = op;
+                    } 
+                }
+            }
+        }
+        
+        
+        return best;
+    }
     /**
      * Checker de la class Tournee
      * @return 
@@ -484,18 +560,19 @@ public class Tournee {
         var coutAverif = this.coutTotal;
         var coutReel = 0;
         
-        coutReel += this.depot.getCoutVers(this.clients.getFirst());//Depot vers premier
-        /**
-         * Le dernier client n'a pas de suivant, on s'arrette avant
-         */
-        for(int i = 0; i < this.getNbClients()-1 ; i++){
-            Client courant  = this.clients.get(i);
-            Client suivant  = this.clients.get(i+1);
-            
-            coutReel += courant.getCoutVers(suivant);
+        if(!this.clients.isEmpty()){
+            coutReel += this.depot.getCoutVers(this.clients.getFirst());//Depot vers premier
+            /**
+             * Le dernier client n'a pas de suivant, on s'arrette avant
+             */
+            for(int i = 0; i < this.getNbClients()-1 ; i++){
+                Client courant  = this.clients.get(i);
+                Client suivant  = this.clients.get(i+1);
+
+                coutReel += courant.getCoutVers(suivant);
+            }
+            coutReel += this.clients.getLast().getCoutVers(this.depot);
         }
-        coutReel += this.clients.getLast().getCoutVers(this.depot);
-        
         if(coutAverif == coutReel){
             return true;
         }

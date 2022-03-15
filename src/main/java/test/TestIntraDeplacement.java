@@ -75,5 +75,8 @@ public class TestIntraDeplacement {
         
         System.out.println(t.toString());
         System.out.println(t.check());//true
+        
+        System.out.println(op2.isTabou(op2)); //true
+        System.out.println(op2.isTabou(op1)); //false
     }
 }

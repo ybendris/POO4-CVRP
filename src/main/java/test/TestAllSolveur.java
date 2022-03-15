@@ -93,7 +93,7 @@ public class TestAllSolveur {
         solveurs.add(new InsertionSimple());
         solveurs.add(new InsertionPlusProcheVoisin());
         solveurs.add(new MeilleureInsertion());
-        solveurs.add(new ClarkeAndWright());
+        //solveurs.add(new ClarkeAndWright());
         solveurs.add(new RechercheLocale());
         // TO ADD : par la suite vous ajouterez ici les autres solveurs a tester
         // solveurs.add(new AutreSolveurATester());

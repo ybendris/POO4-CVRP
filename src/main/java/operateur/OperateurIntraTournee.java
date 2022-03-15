@@ -17,7 +17,7 @@ public abstract class OperateurIntraTournee extends OperateurLocal{
     }
 
     public OperateurIntraTournee(int positionI, int positionJ, Tournee tournee) {
-        super(positionI, positionJ, tournee);
+        super(tournee,positionI, positionJ);
         this.deltaCout = this.evalDeltaCout();
     }
 

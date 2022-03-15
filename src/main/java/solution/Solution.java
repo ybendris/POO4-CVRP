@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Objects;
 import operateur.FusionTournees;
 import operateur.InsertionClient;
+import operateur.OperateurInterTournees;
 import operateur.OperateurIntraTournee;
 import operateur.OperateurLocal;
 import operateur.TypeOperateurLocal;
@@ -132,14 +133,32 @@ public class Solution {
         return best;
     }
     
+    private OperateurLocal getMeilleurOperateurInter(TypeOperateurLocal type){
+        OperateurLocal best = OperateurLocal.getOperateur(type);
+        for(Tournee t1 : this.tournees){
+            for(Tournee t2 : this.tournees){
+                OperateurLocal op = t1.getMeilleurOperateurInter(t2,type);
+                if(op.isMeilleur(best)) {
+                    best = op;
+                }
+            }
+        }
+        return best;
+    }
+
+    
     public OperateurLocal getMeilleurOperateurLocal(TypeOperateurLocal type) {
         if(OperateurLocal.getOperateur(type) instanceof OperateurIntraTournee){
             return this.getMeilleurOperateurIntra(type);
+        }
+        else if(OperateurLocal.getOperateur(type) instanceof OperateurInterTournees){
+            return this.getMeilleurOperateurInter(type);
         }
         else{
             return null;
         }
     }
+    
     
     
     public boolean doInsertion(InsertionClient infos){

@@ -71,8 +71,7 @@ public abstract class Operateur {
         if(!this.isMouvementRealisable()){
             return false;
         }
-        this.doMouvement();
-        return true;
+        return this.doMouvement();
     }
 
     public Tournee getTournee() {

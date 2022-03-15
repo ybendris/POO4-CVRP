@@ -26,7 +26,7 @@ public abstract class OperateurInterTournees extends OperateurLocal {
 
        
     public OperateurInterTournees(Tournee tournee, Tournee autreTournee, int positionI, int positionJ) {
-        super(positionI, positionJ, tournee);
+        super(tournee,positionI, positionJ);
         this.autreTournee = autreTournee;
         this.clientJ = autreTournee.getClientByPosition(positionJ);
         this.deltaCout = this.evalDeltaCout();
@@ -42,13 +42,28 @@ public abstract class OperateurInterTournees extends OperateurLocal {
     public Tournee getTournee() {
         return tournee;
     }
+
+    public int getDeltaCoutTournee() {
+        return deltaCoutTournee;
+    }
+
+    public int getDeltaCoutAutreTournee() {
+        return deltaCoutAutreTournee;
+    }
+    
+    
     
     @Override
     protected int evalDeltaCout() {
+        this.deltaCoutTournee = this.evalDeltaCoutTournee();
+        this.deltaCoutAutreTournee = this.evalDeltaCoutAutreTournee();
+        
         if(this.evalDeltaCoutTournee() == Integer.MAX_VALUE || this.evalDeltaCoutAutreTournee() == Integer.MAX_VALUE){
             return Integer.MAX_VALUE;
         }
         return this.evalDeltaCoutTournee()+ this.evalDeltaCoutAutreTournee();
     }
+    
+    
     
 }

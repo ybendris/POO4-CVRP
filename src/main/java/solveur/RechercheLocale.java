@@ -48,7 +48,7 @@ public class RechercheLocale implements Solveur{
         
         while(improve == true){
             improve = false;
-            OperateurLocal bestOperateur = s.getMeilleurOperateurLocal(TypeOperateurLocal.INTRA_DEPLACEMENT);
+            OperateurLocal bestOperateur = s.getMeilleurOperateurLocal(TypeOperateurLocal.INTER_DEPLACEMENT);
             System.out.println(bestOperateur);
             if(bestOperateur.isMouvementAmeliorant()){
                 s.doMouvementRechercheLocale(bestOperateur);
@@ -71,10 +71,6 @@ public class RechercheLocale implements Solveur{
             
             System.out.println(s.toString());
             System.out.println(s.check());
-            
-            
-            OperateurLocal bestOperateur =s.getMeilleurOperateurLocal(TypeOperateurLocal.INTRA_DEPLACEMENT);
-             System.out.println(bestOperateur);
         }
         catch(ReaderException ex){
             System.out.println(ex.getMessage());
