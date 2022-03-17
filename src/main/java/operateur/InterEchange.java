@@ -34,7 +34,14 @@ public class InterEchange extends OperateurInterTournees {
 
     @Override
     public boolean isTabou(OperateurLocal operateur) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if(operateur == null) return false;
+        if(!(operateur instanceof InterEchange)) return false;
+        if(operateur.tournee == null || operateur.clientI == null || operateur.clientJ == null) return false;
+        
+        if(this.clientI.equals(operateur.clientI) || this.clientJ.equals(operateur.clientJ))
+            return true;
+        
+        return false;
     }
 
     @Override

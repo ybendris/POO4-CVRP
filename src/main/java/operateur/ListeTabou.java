@@ -33,7 +33,7 @@ public class ListeTabou {
         return listeTabou;
     }
     
-    private void add(OperateurLocal operateur){
+    public void add(OperateurLocal operateur){
         if(this.listeTabou.size() >= 80){
             this.listeTabou.poll();
         }

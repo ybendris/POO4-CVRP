@@ -30,7 +30,15 @@ public class IntraEchange extends OperateurIntraTournee {
     
     @Override
     public boolean isTabou(OperateurLocal operateur) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if(operateur == null) return false;
+        if(!(operateur instanceof IntraEchange)) return false;
+        if(operateur.tournee == null || operateur.clientI == null || operateur.clientJ == null) return false;
+        if(!this.tournee.equals(operateur.tournee)) return false;
+        if(this.clientI.equals(operateur.clientI) && this.clientJ.equals(operateur.clientJ))
+        if(this.clientI.equals(operateur.clientJ) && this.clientJ.equals(operateur.clientI))
+            return true;
+        
+        return false;
     }
 
     @Override

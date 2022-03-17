@@ -24,6 +24,7 @@ import solveur.InsertionPlusProcheVoisin;
 import solveur.InsertionSimple;
 import solveur.MeilleureInsertion;
 import solveur.RechercheLocale;
+import solveur.RechercheTabou;
 import solveur.Solveur;
 
 /**
@@ -95,6 +96,7 @@ public class TestAllSolveur {
         solveurs.add(new MeilleureInsertion());
         //solveurs.add(new ClarkeAndWright());
         solveurs.add(new RechercheLocale());
+        solveurs.add(new RechercheTabou(new RechercheLocale()));
         // TO ADD : par la suite vous ajouterez ici les autres solveurs a tester
         // solveurs.add(new AutreSolveurATester());
     }

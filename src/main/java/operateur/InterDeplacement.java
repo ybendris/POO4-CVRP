@@ -40,7 +40,7 @@ public class InterDeplacement extends OperateurInterTournees {
     public String toString() {
         return "InterDeplacement{" +  "positionI=" + positionI +  ", positionJ=" + positionJ + ", coutDeplacementGlobal=" + deltaCout +","
                 + "\n coutDeplacementTournee=" + deltaCoutTournee 
-                + ",\n coutDeplacementAutre=" + deltaCoutAutreTournee +", \nclientI="+ clientI +", clientJ="+ clientJ+", Tournee="+tournee+", autreTournee="+autreTournee+ '}';
+                + ",\n coutDeplacementAutre=" + deltaCoutAutreTournee +", clientI="+ clientI +", clientJ="+ clientJ+", Tournee="+tournee+", autreTournee="+autreTournee+ '}';
     }
 
     @Override
