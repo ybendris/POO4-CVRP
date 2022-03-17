@@ -16,10 +16,7 @@ import solution.Solution;
  * @author yanni
  */
 public class InsertionSimple implements Solveur {
-
-    
-    
-    
+  
     @Override
     public String getNom() {
         return "Intertion Simple";

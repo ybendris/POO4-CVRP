@@ -39,6 +39,12 @@ public class TestIntraDeplacement {
         t.ajouterClient(c4);
         t.ajouterClient(c5);
         
+        Tournee t2 = new Tournee(inst);
+        t2.ajouterClient(c1);
+        t2.ajouterClient(c2);
+        t2.ajouterClient(c3);
+        t2.ajouterClient(c4);
+        t2.ajouterClient(c5);
 
         System.out.println(t.deltaCoutSuppression(1));//return 0
         System.out.println(t.deltaCoutSuppression(4));//return -30
@@ -54,7 +60,10 @@ public class TestIntraDeplacement {
         System.out.println(op.toString());//2   4   et -20
         System.out.println(op1.toString());//4 2 et -30
         
-        OperateurLocal op2 = OperateurIntraTournee.getOperateurIntra(TypeOperateurLocal.INTRA_DEPLACEMENT,t,2,5);
+        OperateurLocal op2 = OperateurIntraTournee.getOperateurIntra(TypeOperateurLocal.INTRA_DEPLACEMENT,t,2,5); //Mouvement avant le depot, clientJ null
+        OperateurLocal op3 = OperateurIntraTournee.getOperateurIntra(TypeOperateurLocal.INTRA_DEPLACEMENT,t2,2,5); //Mouvement avant le depot
+        OperateurLocal op4 = OperateurIntraTournee.getOperateurIntra(TypeOperateurLocal.INTRA_DEPLACEMENT,t2,3,5); //Mouvement avant le depot
+        OperateurLocal op5 = OperateurIntraTournee.getOperateurIntra(TypeOperateurLocal.INTRA_DEPLACEMENT,t2,2,4); 
         System.out.println(op2.toString());
                 
         System.out.println(op1.isMeilleur(op));//true 
@@ -62,7 +71,7 @@ public class TestIntraDeplacement {
         
         System.out.println(op1.isMouvementRealisable());//true
         System.out.println(op1.isMouvementAmeliorant());//true
-        System.out.println(op2.isMouvementRealisable()); //false
+        System.out.println(op2.isMouvementRealisable()); //true
         
        
         System.out.println(t.toString());        
@@ -76,7 +85,14 @@ public class TestIntraDeplacement {
         System.out.println(t.toString());
         System.out.println(t.check());//true
         
-        System.out.println(op2.isTabou(op2)); //true
-        System.out.println(op2.isTabou(op1)); //false
+        System.out.println("check tabou");
+        System.out.println(op2);
+        System.out.println(op2.isTabou(op2)); //true: meme operateur donc tabou
+        System.out.println(op2.isTabou(op3)); //false: pas les meme tournees donc pas tabou
+        System.out.println(op2.isTabou(op4)); //false: pas le meme client déplacé
+        System.out.println(op3.isTabou(op5)); //true: même tournée / même client déplacé / pas au même endroit cf sujet
+        System.out.println(op5.isTabou(op3)); //true: cf précédent
+        
+        
     }
 }

@@ -19,6 +19,8 @@ import operateur.FusionTournees;
 import operateur.InsertionClient;
 import operateur.InterDeplacement;
 import operateur.IntraDeplacement;
+import operateur.IntraEchange;
+import operateur.ListeTabou;
 import operateur.OperateurInterTournees;
 import operateur.OperateurIntraTournee;
 import operateur.OperateurLocal;
@@ -42,6 +44,16 @@ public class Tournee {
         this.coutTotal = 0;
         this.clients = new LinkedList<>();
     }
+
+    public Tournee(Tournee t) {
+        this.depot = t.depot;
+        this.capacite = t.capacite;
+        this.demandeTotale = t.demandeTotale;
+        this.coutTotal = t.getCoutTotal();
+        this.clients = t.getClients(); //ici on retourne bien une COPIE (avec new ans getClient)
+    }
+    
+    
 
     public Depot getDepot() {
         return depot;
@@ -155,6 +167,13 @@ public class Tournee {
 
     private boolean isPositionInsertionValide(int position){
         if(0 <= position && position <= this.getNbClients()){
+            return true;
+        }
+        return false;
+    }
+    
+    private boolean isPositionClient(int position){
+        if(0 <= position && position < this.getNbClients()){
             return true;
         }
         return false;
@@ -281,6 +300,30 @@ public class Tournee {
     }
     
     
+    public boolean doEchange(IntraEchange infos){
+        if(infos == null) return false;
+        if(!infos.isMouvementRealisable()) return false; 
+        
+        int positionI = infos.getPositionI();
+        int positionJ = infos.getPositionJ();
+        
+        Client ClientI = infos.getClientI();
+        Client ClientJ = infos.getClientJ();
+        
+        this.clients.set(positionI, ClientJ);
+        this.clients.set(positionJ, ClientI);
+        
+        this.coutTotal += infos.getDeltaCout(); //MAJ cout total
+        
+        if (!this.check()){
+            System.out.println("Mauvais échange des clients");
+            System.out.println(infos);
+            System.exit(-1); //Termine le programme
+        }
+        
+        return true;
+    }
+    
     public boolean fusionTourneesPossible(Tournee tourneeToFusion){
         if(tourneeToFusion == null) return false;
         /**
@@ -373,7 +416,70 @@ public class Tournee {
         return deltaCout;
     }
     
+    public int deltaCoutEchange(int positionI, int positionJ) {
+        if(!isPositionClient(positionI)){
+            //System.out.println("posI Invalid");
+            return Integer.MAX_VALUE;
+        }
+        if(!isPositionClient(positionJ)){
+            //System.out.println("posJ Invalid");
+            return Integer.MAX_VALUE;
+        }
+        if(positionI == positionJ){
+            //System.out.println("posI = posJ");
+            return Integer.MAX_VALUE;
+        }
+        if(!(positionI<positionJ)){
+            //System.out.println("!(positionI<positionJ)");
+            return Integer.MAX_VALUE;
+        }
+        
+        
+        if(positionJ-positionI == 1){
+            //System.out.println("Consécutif");
+            return deltaCoutEchangeConsecutif(positionI);
+        }
+        //System.out.println("Pas consécutif");
+        return deltaCoutRemplacement(positionI,this.getClientByPosition(positionJ))+deltaCoutRemplacement(positionJ,this.getClientByPosition(positionI));
+    }
     
+    private int deltaCoutEchangeConsecutif(int positionI){
+        int deltaCout = 0;
+        
+        Client clientI = this.getClientByPosition(positionI);
+        Client clientJ = this.getClientByPosition(positionI+1);
+        Point avantI = this.getPrec(positionI);
+        Point apresJ = this.getNext(positionI+1);
+        
+        
+        deltaCout -= avantI.getCoutVers(clientI);
+        deltaCout -= clientI.getCoutVers(clientJ);
+        deltaCout -= clientJ.getCoutVers(apresJ);
+        
+        deltaCout += avantI.getCoutVers(clientJ);
+        deltaCout += clientJ.getCoutVers(clientI);
+        deltaCout += clientI.getCoutVers(apresJ);
+        
+        
+        return deltaCout;
+    }
+    
+    private int deltaCoutRemplacement(int position, Client clientJ){
+        int deltaCout = 0;
+
+        Client clientI = this.getClientByPosition(position);
+        
+        Point avantI = this.getPrec(position);
+        Point apresI = this.getNext(position);
+        
+        deltaCout-= avantI.getCoutVers(clientI);
+        deltaCout-= clientI.getCoutVers(apresI);
+        
+        deltaCout+= avantI.getCoutVers(clientJ);
+        deltaCout+= clientJ.getCoutVers(apresI);
+        
+        return deltaCout;
+    }
     public boolean doDeplacement(IntraDeplacement infos){
         if(infos == null) return false;
         if(!infos.isMouvementRealisable()) return false;
@@ -481,11 +587,6 @@ public class Tournee {
     }
     
     private boolean isPositionValide(int position){
-        /*if(position >= 0 && position < this.getNbClients())
-            return true;
-        
-        return false;*/
-        
         if(position <0 || position > this.getNbClients()+1){
             return false;
         }
@@ -516,10 +617,11 @@ public class Tournee {
     
     public OperateurLocal getMeilleurOperateurIntra(TypeOperateurLocal type) {
         OperateurLocal best = OperateurLocal.getOperateur(type);
+        ListeTabou liste = ListeTabou.getInstance();
         for(int i=0; i<clients.size(); i++) {
             for(int j=0; j<clients.size()+1; j++) {
                 OperateurIntraTournee op = OperateurLocal.getOperateurIntra(type, this, i, j);
-                if(op.isMeilleur(best)) {
+                if(op.isMeilleur(best) && !liste.isTabou(best)) {
                     best = op;
                 }
             }
@@ -530,11 +632,12 @@ public class Tournee {
     
     public OperateurLocal getMeilleurOperateurInter(Tournee autreTournee, TypeOperateurLocal type){
         OperateurLocal best = OperateurLocal.getOperateur(type);
+        ListeTabou liste = ListeTabou.getInstance(); 
         if(!this.equals(autreTournee)) {
             for(int i=0; i<clients.size(); i++) {
                 for(int j=0; j<autreTournee.getNbClients()+1; j++) {
                     OperateurInterTournees op = OperateurLocal.getOperateurInter(type, this,autreTournee, i, j);
-                    if(op.isMeilleur(best)) {
+                    if(op.isMeilleur(best) && !liste.isTabou(best)) {
                         best = op;
                     } 
                 }

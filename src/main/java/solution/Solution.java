@@ -39,6 +39,15 @@ public class Solution {
         this.tournees = new LinkedList<>();
     }
     
+    public Solution(Solution s){
+        this.coutTotal = s.coutTotal;
+        this.instance = s.instance;
+        this.tournees = new LinkedList<Tournee>();
+        for(Tournee tourneeToAdd : s.getTournees()){
+            this.tournees.add(new Tournee(tourneeToAdd));
+        }
+    }
+    
     public boolean ajouterClientNouvelleTournee(Client clientToAdd){
         Tournee nouvelleTournee = new Tournee(this.instance);
         if(nouvelleTournee.ajouterClient(clientToAdd)){
@@ -286,6 +295,8 @@ public class Solution {
             Instance i = read.readInstance();
           
             Solution s = new Solution(i);
+            Solution s2 = new Solution(s);
+            
             
             for(Client cli : i.getClients()){
                 if(s.ajouterClientTourneeExistante(cli)){
@@ -294,7 +305,11 @@ public class Solution {
                     s.ajouterClientNouvelleTournee(cli);
                 }
             }
-            System.out.println(s.toString());
+            
+            System.out.println("Solution intiale: "+s.toString());
+            System.out.println("Solution copiée: "+s2.toString());
+            
+            
         }
         catch(ReaderException ex){
             System.out.println(ex.getMessage());

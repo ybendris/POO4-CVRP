@@ -58,7 +58,7 @@ public abstract class OperateurLocal extends Operateur{
             case INTRA_DEPLACEMENT:
                 return new IntraDeplacement();
             case INTRA_ECHANGE:
-                //return new IntraEchange();
+                return new IntraEchange();
             default:
                 return null;
         }
@@ -69,7 +69,7 @@ public abstract class OperateurLocal extends Operateur{
             case INTRA_DEPLACEMENT:
                 return new IntraDeplacement(tournee, positionI, positionJ);
             case INTRA_ECHANGE:
-                //return new IntraEchange(tournee, positionI, positionJ);
+                return new IntraEchange(tournee, positionI, positionJ);
             default:
                 return null;
         }

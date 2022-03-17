@@ -43,10 +43,13 @@ public class TestInterDeplacement {
         t.ajouterClient(c3);
         t.ajouterClient(c4);
         Tournee u = new Tournee(inst);
+        Tournee t2 = new Tournee(inst);
         u.ajouterClient(c5);
         u.ajouterClient(c7);
         InterDeplacement intDep1 = new InterDeplacement(t, u, 0, 1);
         InterDeplacement intDep2 = new InterDeplacement(t, u, 5, 0);
+        InterDeplacement intDep3 = new InterDeplacement(u,t, 0, 1);
+        InterDeplacement intDep4 = new InterDeplacement(t,t2, 0, 1);
         System.out.println(intDep1);
         System.out.println(intDep2);
         System.out.println(intDep1.isMeilleur(intDep2));
@@ -65,6 +68,13 @@ public class TestInterDeplacement {
         
         System.out.println("Tabou ? " + intDep1.isTabou(intDep2) );//False?
         System.out.println("Tabou ? " + intDep1.isTabou(intDep1) );//True?
+        
+        System.out.println("check tabou");
+        
+        System.out.println(intDep1.isTabou(intDep2)); //false: pas le même client déplacé
+        System.out.println(intDep1.isTabou(intDep3)); //false: pas le même client déplacé
+        System.out.println(intDep1.isTabou(intDep4)); //true: même client déplacé, pas dans la même tournéee
+        
         
     }
 }

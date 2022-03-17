@@ -43,9 +43,9 @@ public class IntraDeplacement extends OperateurIntraTournee {
     public boolean isTabou(OperateurLocal operateur) {
         if(operateur == null) return false;
         if(!(operateur instanceof IntraDeplacement)) return false;
-        if(operateur.tournee == null || operateur.clientI == null || operateur.clientJ == null) return false;
+        if(operateur.tournee == null || operateur.clientI == null) return false;
         if(!this.tournee.equals(operateur.tournee)) return false;
-        if(this.clientI.equals(operateur.clientI) && this.clientJ.equals(operateur.clientJ))
+        if(this.clientI.equals(operateur.clientI))//suppression verif clientJ
             return true;
         
         return false;

@@ -41,8 +41,12 @@ public class ListeTabou {
     }
     
     public boolean isTabou(OperateurLocal operateur){
-        //return operateur.isTabou();
-        return true;
+        for(OperateurLocal op : this.listeTabou){
+            if(op.isTabou(operateur)){
+                return true;
+            }
+        }
+        return false;
     }
     
     

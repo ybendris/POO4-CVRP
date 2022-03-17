@@ -7,6 +7,7 @@ package solveur;
 import instance.Instance;
 import io.InstanceReader;
 import io.exception.ReaderException;
+import operateur.ListeTabou;
 import operateur.OperateurLocal;
 import operateur.TypeOperateurLocal;
 import solution.Solution;
@@ -38,30 +39,37 @@ public class RechercheLocale implements Solveur{
     */
     @Override
     public Solution solve(Instance instance) {
+        ListeTabou liste = ListeTabou.getInstance();
+        liste.vider();
+        
         InsertionSimple algoSimple = new InsertionSimple();    
         Solution s = algoSimple.solve(instance);
         
         //System.out.println("Solution Insertion simple: "+s);
-        System.out.println(s.getCoutTotal());
+        //System.out.println(s.getCoutTotal());
         
         boolean improve = true;
         
         while(improve == true){
             improve = false;
-            OperateurLocal bestOperateur = s.getMeilleurOperateurLocal(TypeOperateurLocal.INTER_DEPLACEMENT);
-            System.out.println(bestOperateur);
-            if(bestOperateur.isMouvementAmeliorant()){
-                s.doMouvementRechercheLocale(bestOperateur);
-                improve = true;
-            }
             
+            for(TypeOperateurLocal type :TypeOperateurLocal.values()){
+                if(type != TypeOperateurLocal.INTER_ECHANGE ){
+                    OperateurLocal bestOperateur = s.getMeilleurOperateurLocal(type);
+                    System.out.println(bestOperateur);
+                    if(bestOperateur.isMouvementAmeliorant()){
+                        s.doMouvementRechercheLocale(bestOperateur);
+                        improve = true;
+                    } 
+                }
+            }
         }
         return s;
     }
     
     
     public static void main(String[] args) {
-         try{
+        try{
             InstanceReader read = new InstanceReader("instances/A-n32-k5.vrp");
             Instance i = read.readInstance();
             
