@@ -10,52 +10,45 @@ import solution.Tournee;
  *
  * @author yanni
  */
-public class InterDeplacement extends OperateurInterTournees {
-    public InterDeplacement() {
+public class InterEchange extends OperateurInterTournees {
+
+    public InterEchange() {
         super();
     }
 
-    public InterDeplacement(Tournee tournee, Tournee autreTournee, int positionI, int positionJ) {
+    public InterEchange(Tournee tournee, Tournee autreTournee, int positionI, int positionJ) {
         super(tournee, autreTournee, positionI, positionJ);
     }
     
     @Override
     protected int evalDeltaCoutTournee() {
         if(this.tournee == null ) return Integer.MAX_VALUE;
-        return this.tournee.deltaCoutSuppression(this.positionI);
+        return this.tournee.deltaCoutRemplacementInter(positionI, clientJ);
     }
 
     @Override
     protected int evalDeltaCoutAutreTournee() {
         if(this.autreTournee == null ) return Integer.MAX_VALUE;
-        return this.autreTournee.deltaCoutInsertionInter(this.positionJ, this.clientI);
-    }
-
-    @Override
-    protected boolean doMouvement() {
-        return this.tournee.doDeplacement(this);
-    }
-
-    @Override
-    public String toString() {
-        return "InterDeplacement{" +  "positionI=" + positionI +  ", positionJ=" + positionJ + ", coutDeplacementGlobal=" + deltaCout +","
-                + "\n coutDeplacementTournee=" + deltaCoutTournee 
-                + ",\n coutDeplacementAutre=" + deltaCoutAutreTournee +", \nclientI="+ clientI +", clientJ="+ clientJ+", Tournee="+tournee+", autreTournee="+autreTournee+ '}';
+        return this.autreTournee.deltaCoutRemplacementInter(positionJ, clientI);
     }
 
     @Override
     public boolean isTabou(OperateurLocal operateur) {
-        if(operateur == null) return false;
-        if(!(operateur instanceof InterDeplacement)) return false;
-        if(operateur.tournee == null || operateur.clientI == null) return false;
-        
-        if(this.clientI.equals(operateur.clientI))//suppression verif clientJ
-            return true;
-        
-        return false;
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-        
+    @Override
+    protected boolean doMouvement() {
+        return this.tournee.doEchange(this);
+    }
+
+    @Override
+    public String toString() {
+        return "InterEchange{" +  "positionI=" + positionI +  ", positionJ=" + positionJ + ", coutDeplacementGlobal=" + deltaCout +","
+                + "\n coutDeplacementTournee=" + deltaCoutTournee 
+                + ",\n coutDeplacementAutre=" + deltaCoutAutreTournee +", \nclientI="+ clientI +", clientJ="+ clientJ+", Tournee="+tournee+", autreTournee="+autreTournee+ '}';
+    }
+    
     
     
 }

@@ -54,14 +54,12 @@ public class RechercheLocale implements Solveur{
             improve = false;
             
             for(TypeOperateurLocal type :TypeOperateurLocal.values()){
-                if(type != TypeOperateurLocal.INTER_ECHANGE ){
-                    OperateurLocal bestOperateur = s.getMeilleurOperateurLocal(type);
-                    System.out.println(bestOperateur);
-                    if(bestOperateur.isMouvementAmeliorant()){
-                        s.doMouvementRechercheLocale(bestOperateur);
-                        improve = true;
-                    } 
-                }
+                OperateurLocal bestOperateur = s.getMeilleurOperateurLocal(type);
+                System.out.println(bestOperateur);
+                if(bestOperateur.isMouvementAmeliorant()){
+                    s.doMouvementRechercheLocale(bestOperateur);
+                    improve = true;
+                } 
             }
         }
         return s;

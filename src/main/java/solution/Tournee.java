@@ -18,6 +18,7 @@ import java.util.Objects;
 import operateur.FusionTournees;
 import operateur.InsertionClient;
 import operateur.InterDeplacement;
+import operateur.InterEchange;
 import operateur.IntraDeplacement;
 import operateur.IntraEchange;
 import operateur.ListeTabou;
@@ -126,6 +127,8 @@ public class Tournee {
         }
     }
     
+    
+    
     /**
      * Permet d'ajouter un client en vérifiant:
      *      Client non null
@@ -186,30 +189,7 @@ public class Tournee {
      * @return 
      */
     public int deltaCoutInsertion(int position, Client clientToAdd){
-        /*
-        if(!isPositionInsertionValide(position))
-            return Integer.MAX_VALUE;
-        if(clientToAdd == null)
-            return Integer.MAX_VALUE;
-
-        int deltaCout = 0;
-        
-        if(this.clients.isEmpty()){ //Ajout dans une tournee qui n'a pas de client
-            deltaCout = this.depot.getCoutVers(clientToAdd);
-            deltaCout += clientToAdd.getCoutVers(this.depot);
-            
-            //deltaCout est juste un aller-retour (Figure 3b)
-        }
-        else{ //Ajout dans une tournée qui contient déjà des clients à une certaine position
-            Point avant = getPrec(position);
-            Point apres = getCurrent(position);
-            deltaCout += avant.getCoutVers(clientToAdd);
-            deltaCout += clientToAdd.getCoutVers(apres);
-            deltaCout -= avant.getCoutVers(apres);
-        }
-        return deltaCout; 
-        */
-         if(!this.isPositionInsertionValide(position) || clientToAdd == null){
+        if(!this.isPositionInsertionValide(position) || clientToAdd == null){
             return Integer.MAX_VALUE;
         }
         
@@ -317,6 +297,48 @@ public class Tournee {
         
         if (!this.check()){
             System.out.println("Mauvais échange des clients");
+            System.out.println(infos);
+            System.exit(-1); //Termine le programme
+        }
+        
+        return true;
+    }
+    
+    public boolean doEchange(InterEchange infos){
+        if(infos == null) return false;
+        if(!infos.isMouvementRealisable()) return false; 
+        
+        int positionI = infos.getPositionI();
+        int positionJ = infos.getPositionJ();
+        
+        Client clientI = infos.getClientI();
+        Client clientJ = infos.getClientJ();
+        
+        Tournee autreTournee = infos.getAutreTournee();
+        
+        this.clients.set(positionI, clientJ);
+        autreTournee.clients.set(positionJ, clientI);
+        
+        
+        //maj cout
+        this.coutTotal += infos.getDeltaCoutTournee();
+        autreTournee.coutTotal += infos.getDeltaCoutAutreTournee();
+        
+        //maj demande
+        this.demandeTotale = this.demandeTotale - clientI.getDemande() + clientJ.getDemande();
+        autreTournee.demandeTotale = autreTournee.demandeTotale - clientJ.getDemande() + clientI.getDemande();
+        
+        
+        
+        
+       if (!this.check()){
+            System.out.println("Mauvais échange inter-tournee, (courante)"+this.toString()+"\n"+autreTournee.toString());
+            System.out.println(infos);
+            System.exit(-1); //Termine le programme
+        }
+        
+        if (!infos.getAutreTournee().check()){
+            System.out.println("Mauvais échange inter-tournee, (autre)"+autreTournee.toString());
             System.out.println(infos);
             System.exit(-1); //Termine le programme
         }
@@ -480,6 +502,23 @@ public class Tournee {
         
         return deltaCout;
     }
+    
+    public int deltaCoutRemplacementInter(int position, Client clientJ){
+        Client clientI = this.getClientByPosition(position);
+        if(clientI == null){
+            return Integer.MAX_VALUE;
+        }
+        if(clientJ == null){
+            return Integer.MAX_VALUE;
+        }
+        if(this.demandeTotale - clientI.getDemande() + clientJ.getDemande() > this.capacite){
+            return Integer.MAX_VALUE;
+        }
+        
+        return deltaCoutRemplacement(position,clientJ);
+    }
+    
+    
     public boolean doDeplacement(IntraDeplacement infos){
         if(infos == null) return false;
         if(!infos.isMouvementRealisable()) return false;
