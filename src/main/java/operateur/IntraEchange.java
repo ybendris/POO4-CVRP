@@ -28,13 +28,13 @@ public class IntraEchange extends OperateurIntraTournee {
     
     
     
-    @Override
     public boolean isTabou(OperateurLocal operateur) {
         if(operateur == null) return false;
         if(!(operateur instanceof IntraEchange)) return false;
         if(operateur.tournee == null || operateur.clientI == null || operateur.clientJ == null) return false;
         if(!this.tournee.equals(operateur.tournee)) return false;
         if(this.clientI.equals(operateur.clientI) && this.clientJ.equals(operateur.clientJ))
+            return true;
         if(this.clientI.equals(operateur.clientJ) && this.clientJ.equals(operateur.clientI))
             return true;
         

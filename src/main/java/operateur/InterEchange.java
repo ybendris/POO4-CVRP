@@ -38,6 +38,10 @@ public class InterEchange extends OperateurInterTournees {
         if(!(operateur instanceof InterEchange)) return false;
         if(operateur.tournee == null || operateur.clientI == null || operateur.clientJ == null) return false;
         
+        /**
+         * "au moins un des clients échangés par l’opérateur d’échange inter-tournées
+         * est identique dans les deux tournées (attributs clientI ou clientJ)"
+         */
         if(this.clientI.equals(operateur.clientI) || this.clientJ.equals(operateur.clientJ))
             return true;
         

@@ -49,7 +49,7 @@ public class InterDeplacement extends OperateurInterTournees {
         if(!(operateur instanceof InterDeplacement)) return false;
         if(operateur.tournee == null || operateur.clientI == null) return false;
         
-        if(this.clientI.equals(operateur.clientI))//suppression verif clientJ
+        if(this.clientI.equals(operateur.clientI))
             return true;
         
         return false;

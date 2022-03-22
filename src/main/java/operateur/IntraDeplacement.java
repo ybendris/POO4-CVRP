@@ -45,7 +45,7 @@ public class IntraDeplacement extends OperateurIntraTournee {
         if(!(operateur instanceof IntraDeplacement)) return false;
         if(operateur.tournee == null || operateur.clientI == null) return false;
         if(!this.tournee.equals(operateur.tournee)) return false;
-        if(this.clientI.equals(operateur.clientI))//suppression verif clientJ
+        if(this.clientI.equals(operateur.clientI))
             return true;
         
         return false;

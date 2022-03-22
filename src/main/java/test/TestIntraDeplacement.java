@@ -86,10 +86,9 @@ public class TestIntraDeplacement {
         System.out.println(t.check());//true
         
         System.out.println("check tabou");
-        System.out.println(op2);
         System.out.println(op2.isTabou(op2)); //true: meme operateur donc tabou
         System.out.println(op2.isTabou(op3)); //false: pas les meme tournees donc pas tabou
-        System.out.println(op2.isTabou(op4)); //false: pas le meme client déplacé
+        System.out.println(op2.isTabou(op4)); //false: pas le meme client déplacé + pas meme tournee
         System.out.println(op3.isTabou(op5)); //true: même tournée / même client déplacé / pas au même endroit cf sujet
         System.out.println(op5.isTabou(op3)); //true: cf précédent
         

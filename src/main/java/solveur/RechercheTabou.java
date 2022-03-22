@@ -27,7 +27,7 @@ public class RechercheTabou implements Solveur{
 
     @Override
     public String getNom() {
-        return "RechercheTabou";
+        return "RechercheTabou("+this.solveurInitial.getNom()+')';
     }
 
     /*
@@ -60,8 +60,10 @@ public class RechercheTabou implements Solveur{
     
     @Override
     public Solution solve(Instance instance) {
-        Solution s = this.solveurInitial.solve(instance);
-        
+        /**
+         * solution initiale après application d’une méthode constructive et d’une recherche locale
+         */
+        Solution s = new RechercheLocale(this.solveurInitial).solve(instance);
         
         Solution bestSolution = s;
         int nbIterMax = 10000;
@@ -82,6 +84,8 @@ public class RechercheTabou implements Solveur{
                 liste.add(best);
             }
             if(s.getCoutTotal() < bestSolution.getCoutTotal()){
+                liste.setDeltaAspiration(bestSolution.getCoutTotal() - s.getCoutTotal());
+
                 bestSolution = new Solution(s);
                 nbIterSansAmelioration = 0;
             }
@@ -89,9 +93,6 @@ public class RechercheTabou implements Solveur{
                 nbIterSansAmelioration++;
             }
         }
-        
-        TypeOperateurLocal[] Operateur = TypeOperateurLocal.values();
-        System.out.println("Operateur"+Operateur);
         
         
         return bestSolution;
@@ -103,12 +104,13 @@ public class RechercheTabou implements Solveur{
             Instance i = read.readInstance();
             
             
-            
-            RechercheTabou algo = new RechercheTabou(new RechercheLocale());
+            Solveur solveurInitial = new InsertionSimple();
+            RechercheTabou algo = new RechercheTabou(solveurInitial);
             
             Solution s = algo.solve(i);
             
             System.out.println(s.toString());
+            System.out.println("CoutTotal: "+s.getCoutTotal());
             System.out.println(s.check());
         }
         catch(ReaderException ex){

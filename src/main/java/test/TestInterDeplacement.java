@@ -66,11 +66,9 @@ public class TestInterDeplacement {
         System.out.println("t: " + t);
         System.out.println("u: " + u);
         
-        System.out.println("Tabou ? " + intDep1.isTabou(intDep2) );//False?
-        System.out.println("Tabou ? " + intDep1.isTabou(intDep1) );//True?
-        
         System.out.println("check tabou");
-        
+        System.out.println("Tabou ? " + intDep1.isTabou(intDep2) );//False
+        System.out.println("Tabou ? " + intDep1.isTabou(intDep1) );//True
         System.out.println(intDep1.isTabou(intDep2)); //false: pas le même client déplacé
         System.out.println(intDep1.isTabou(intDep3)); //false: pas le même client déplacé
         System.out.println(intDep1.isTabou(intDep4)); //true: même client déplacé, pas dans la même tournéee

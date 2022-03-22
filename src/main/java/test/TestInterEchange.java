@@ -52,7 +52,7 @@ public class TestInterEchange {
         System.out.println("DeltaCout Infinity: "+ t.deltaCoutRemplacementInter(3, c3));//Infinity
         System.out.println("DeltaCout Infinity: "+ u.deltaCoutRemplacementInter(3, c6));//Infinity
         
-        System.out.println("DeltaCout Infinity: "+ t.deltaCoutRemplacementInter(2, c3)); //-40
+        System.out.println("DeltaCout -40: "+ t.deltaCoutRemplacementInter(2, c3)); //-40
         System.out.println("DeltaCout Infinity: "+ u.deltaCoutRemplacementInter(2, c2)); //Infinity: Dépassement capacité
         
         System.out.println("--------------------");
@@ -62,11 +62,16 @@ public class TestInterEchange {
         InterEchange op1 = new InterEchange(u,t,2,2); //-40
         OperateurLocal op2 = OperateurInterTournees.getOperateurInter(TypeOperateurLocal.INTER_ECHANGE, t, u, 2, 2);
         InterEchange op3 = new InterEchange(u,t,2,1); //Infinity: Dépassement capacité
+        InterEchange op4 = new InterEchange(t,u,0,1);  //20
+        InterEchange op5 = new InterEchange(t,u,0,2);  //-80
+
         
         System.out.println(op);
         System.out.println(op1);
         System.out.println(op2);
         System.out.println(op3);
+        System.out.println(op4);
+        System.out.println(op5);
         
         System.out.println(op.isMouvementRealisable()); //true
         System.out.println(op.isMouvementAmeliorant()); //true
@@ -92,5 +97,15 @@ public class TestInterEchange {
         System.out.println(u);
         
         System.out.println(op3.doMouvementIfRealisable());//false
+        
+        System.out.println("check tabou");
+        System.out.println(op.isTabou(op)); //true: même opérateur
+        System.out.println(op4.isTabou(op4)); //true: même opérateur
+        System.out.println(op2.isTabou(op2)); //true: même opérateur
+        
+        System.out.println(op4.isTabou(op5)); //true: un seul client en commun
+        System.out.println(op.isTabou(op5)); //true: un seul client en commun
+        System.out.println(op.isTabou(op1)); //false pas de clientI ou J en commun
+       
     }
 }

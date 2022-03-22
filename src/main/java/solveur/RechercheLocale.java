@@ -17,10 +17,16 @@ import solution.Solution;
  * @author yanni
  */
 public class RechercheLocale implements Solveur{
+    private Solveur solveurInitial;
 
+    public RechercheLocale(Solveur solveurInitial) {
+        this.solveurInitial = solveurInitial;
+    }
+    
+    
     @Override
     public String getNom() {
-        return "Recherche Locale";
+        return "RechercheLocale("+this.solveurInitial.getNom()+')';
     }
 
     
@@ -41,9 +47,8 @@ public class RechercheLocale implements Solveur{
     public Solution solve(Instance instance) {
         ListeTabou liste = ListeTabou.getInstance();
         liste.vider();
-        
-        InsertionSimple algoSimple = new InsertionSimple();    
-        Solution s = algoSimple.solve(instance);
+           
+        Solution s = this.solveurInitial.solve(instance);
 
         boolean improve = true;
         
@@ -62,13 +67,18 @@ public class RechercheLocale implements Solveur{
         return s;
     }
     
-    
+    /**
+     * Test sur la première instance
+     * @param args 
+     */
     public static void main(String[] args) {
         try{
             InstanceReader read = new InstanceReader("instances/A-n32-k5.vrp");
             Instance i = read.readInstance();
             
-            RechercheLocale algo = new RechercheLocale();
+            Solveur solveurInitial = new InsertionSimple();
+            
+            RechercheLocale algo = new RechercheLocale(solveurInitial);
             
             Solution s = algo.solve(i);
             

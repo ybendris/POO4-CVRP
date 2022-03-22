@@ -54,13 +54,13 @@ public class TestIntraEchange {
         OperateurLocal op2 = OperateurIntraTournee.getOperateurIntra(TypeOperateurLocal.INTRA_ECHANGE,t,1,4);
         IntraEchange op3 = new IntraEchange(t,1,5); //Infinity
         IntraEchange op4 = new IntraEchange(t,2,3); //20
+        IntraEchange op5 = new IntraEchange(t,1,0); //20
         
         System.out.println(op); //-20
         System.out.println(op1); //0
         System.out.println(op2); //0
         System.out.println(op3); //Infinity
         System.out.println(op4); //20
-        
         
         System.out.println(op.isMouvementRealisable()); //true
         System.out.println(op.isMouvementAmeliorant()); //true
@@ -85,7 +85,12 @@ public class TestIntraEchange {
         System.out.println(bestOperateur.doMouvementIfRealisable()); //true: il est implémenté
         System.out.println(t);
 
+        System.out.println("check tabou");
+        System.out.println(op.isTabou(op5)); //true: même paire -> {0,1} = {1,0}
+        System.out.println(op.isTabou(op)); //true: même opérateur
+        System.out.println(op1.isTabou(op2)); //false: pas les mêmes clients
         
+     
     }
             
     

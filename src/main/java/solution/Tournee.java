@@ -573,7 +573,6 @@ public class Tournee {
         autreTournee.clients.add(posJ, clientI);
         this.clients.remove(posI);
 
-        System.out.println(infos.getDeltaCoutTournee()+" -- "+infos.getDeltaCoutAutreTournee());
         
         //maj cout
         this.coutTotal += infos.getDeltaCoutTournee();

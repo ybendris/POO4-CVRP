@@ -13,10 +13,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class ListeTabou {
     private static ListeTabou instance;
     private LinkedBlockingQueue<OperateurLocal> listeTabou;
-    
+    private int deltaAspiration;
     
     private ListeTabou(){
         this.listeTabou = new LinkedBlockingQueue<OperateurLocal>(80);
+        this.deltaAspiration = 0; //initialiser à 0?
     }
   
     /**
@@ -41,6 +42,8 @@ public class ListeTabou {
     }
     
     public boolean isTabou(OperateurLocal operateur){
+        if(operateur.getDeltaCout() < this.deltaAspiration)
+            return false;
         for(OperateurLocal op : this.listeTabou){
             if(op.isTabou(operateur)){
                 return true;
@@ -53,5 +56,11 @@ public class ListeTabou {
     public void vider(){
         this.listeTabou.clear();
     }
+
+    public void setDeltaAspiration(int deltaAspiration) {
+        this.deltaAspiration = deltaAspiration;
+    }
+    
+    
     
 }

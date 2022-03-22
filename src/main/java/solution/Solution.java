@@ -116,7 +116,7 @@ public class Solution {
             coutReel+= t.getCoutTotal();
         }
         
-        System.out.println("Cout à vérifier: "+ coutAverif+" Cout réel: "+coutReel);
+        //System.out.println("Cout à vérifier: "+ coutAverif+" Cout réel: "+coutReel);
         return coutAverif == coutReel;
     }
     
