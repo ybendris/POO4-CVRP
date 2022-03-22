@@ -104,7 +104,7 @@ public class RechercheTabou implements Solveur{
             Instance i = read.readInstance();
             
             
-            Solveur solveurInitial = new InsertionSimple();
+            Solveur solveurInitial = new InsertionPlusProcheVoisin();
             RechercheTabou algo = new RechercheTabou(solveurInitial);
             
             Solution s = algo.solve(i);

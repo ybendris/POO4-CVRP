@@ -95,7 +95,7 @@ public class TestAllSolveur {
         solveurs.add(new InsertionPlusProcheVoisin());
         solveurs.add(new MeilleureInsertion());
         //solveurs.add(new ClarkeAndWright()); //TODO: vérifier les test de C&W
-        Solveur solveurInitial = new InsertionSimple();
+        Solveur solveurInitial = new InsertionPlusProcheVoisin();
         solveurs.add(new RechercheLocale(solveurInitial));
         solveurs.add(new RechercheTabou(solveurInitial));
         // TO ADD : par la suite vous ajouterez ici les autres solveurs a tester
