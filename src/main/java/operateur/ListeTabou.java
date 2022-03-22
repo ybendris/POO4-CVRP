@@ -42,10 +42,9 @@ public class ListeTabou {
     }
     
     public boolean isTabou(OperateurLocal operateur){
-        if(operateur.getDeltaCout() < this.deltaAspiration)
-            return false;
+        if(operateur.getDeltaCout() < this.deltaAspiration) return false;
         for(OperateurLocal op : this.listeTabou){
-            if(op.isTabou(operateur)){
+            if(op.isTabou(operateur)){ //operateur.isTabou()?
                 return true;
             }
         }

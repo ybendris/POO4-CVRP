@@ -65,7 +65,7 @@ public class RechercheTabou implements Solveur{
          */
         Solution s = new RechercheLocale(this.solveurInitial).solve(instance);
         
-        Solution bestSolution = s;
+        Solution bestSolution = new Solution(s);
         int nbIterMax = 10000;
         int nbIterSansAmelioration = 0;
         
@@ -85,7 +85,6 @@ public class RechercheTabou implements Solveur{
             }
             if(s.getCoutTotal() < bestSolution.getCoutTotal()){
                 liste.setDeltaAspiration(bestSolution.getCoutTotal() - s.getCoutTotal());
-
                 bestSolution = new Solution(s);
                 nbIterSansAmelioration = 0;
             }
@@ -100,11 +99,11 @@ public class RechercheTabou implements Solveur{
  
     public static void main(String[] args) {
         try{
-            InstanceReader read = new InstanceReader("instances/A-n32-k5.vrp");
+            InstanceReader read = new InstanceReader("instances/A-n39-k5.vrp");
             Instance i = read.readInstance();
             
             
-            Solveur solveurInitial = new InsertionPlusProcheVoisin();
+            Solveur solveurInitial = new MeilleureInsertion();
             RechercheTabou algo = new RechercheTabou(solveurInitial);
             
             Solution s = algo.solve(i);
