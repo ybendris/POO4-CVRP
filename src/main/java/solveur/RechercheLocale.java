@@ -76,7 +76,7 @@ public class RechercheLocale implements Solveur{
             InstanceReader read = new InstanceReader("instances/A-n32-k5.vrp");
             Instance i = read.readInstance();
             
-            Solveur solveurInitial = new InsertionPlusProcheVoisin();
+            Solveur solveurInitial = new InsertionSimple();
             
             RechercheLocale algo = new RechercheLocale(solveurInitial);
             

@@ -659,7 +659,7 @@ public class Tournee {
         for(int i=0; i<clients.size(); i++) {
             for(int j=0; j<clients.size()+1; j++) {
                 OperateurIntraTournee op = OperateurLocal.getOperateurIntra(type, this, i, j);
-                if(op.isMeilleur(best) && !liste.isTabou(best)) {
+                if(op.isMeilleur(best) && !liste.isTabou(op)) {
                     best = op;
                 }
             }

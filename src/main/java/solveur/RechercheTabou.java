@@ -73,6 +73,7 @@ public class RechercheTabou implements Solveur{
         liste.vider();
         
         while(nbIterSansAmelioration < nbIterMax){ //critère d’arrêt
+            liste.setDeltaAspiration(bestSolution.getCoutTotal() - s.getCoutTotal());
             OperateurLocal best = s.getMeilleurOperateurLocal(TypeOperateurLocal.INTER_DEPLACEMENT); // par défaut 
             for(TypeOperateurLocal type :TypeOperateurLocal.values()){
                 OperateurLocal op = s.getMeilleurOperateurLocal(type); //cherche le meilleur opérateur non tabou dans la solution courante S
@@ -84,7 +85,7 @@ public class RechercheTabou implements Solveur{
                 liste.add(best);
             }
             if(s.getCoutTotal() < bestSolution.getCoutTotal()){
-                liste.setDeltaAspiration(bestSolution.getCoutTotal() - s.getCoutTotal());
+                //liste.setDeltaAspiration(bestSolution.getCoutTotal() - s.getCoutTotal());
                 bestSolution = new Solution(s);
                 nbIterSansAmelioration = 0;
             }
@@ -99,11 +100,11 @@ public class RechercheTabou implements Solveur{
  
     public static void main(String[] args) {
         try{
-            InstanceReader read = new InstanceReader("instances/A-n39-k5.vrp");
+            InstanceReader read = new InstanceReader("instances/A-n32-k5.vrp");
             Instance i = read.readInstance();
             
             
-            Solveur solveurInitial = new MeilleureInsertion();
+            Solveur solveurInitial = new InsertionSimple();
             RechercheTabou algo = new RechercheTabou(solveurInitial);
             
             Solution s = algo.solve(i);

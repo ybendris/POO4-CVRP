@@ -7,7 +7,7 @@ package instance.reseau;
 
 /**
  *
- * @author yanni
+ * @author yannis
  */
 public class Depot extends Point {
 

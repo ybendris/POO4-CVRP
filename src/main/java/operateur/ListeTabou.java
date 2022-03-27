@@ -17,7 +17,7 @@ public class ListeTabou {
     
     private ListeTabou(){
         this.listeTabou = new LinkedBlockingQueue<OperateurLocal>(80);
-        this.deltaAspiration = 0; //initialiser à 0?
+        this.deltaAspiration = -Integer.MAX_VALUE; //initialiser à 0?
     }
   
     /**
