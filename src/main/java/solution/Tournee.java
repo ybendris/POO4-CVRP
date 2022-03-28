@@ -675,7 +675,7 @@ public class Tournee {
             for(int i=0; i<clients.size(); i++) {
                 for(int j=0; j<autreTournee.getNbClients()+1; j++) {
                     OperateurInterTournees op = OperateurLocal.getOperateurInter(type, this,autreTournee, i, j);
-                    if(op.isMeilleur(best) && !liste.isTabou(best)) {
+                    if(op.isMeilleur(best) && !liste.isTabou(op)) {
                         best = op;
                     } 
                 }
